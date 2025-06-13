@@ -8,12 +8,6 @@ from torch.utils.data import DataLoader
 
 # Load corresponding config dictionary
 config = get_config(__file__)
-'''
-This is doing:
-for key, value in config.items():
-    globals()[key] = value
-'''
-globals().update(config)
 
 
 class ResBlock(nn.Module):
@@ -68,7 +62,7 @@ class ValueHead(nn.Module):
 
 
 class ResNet(nn.Module):
-    def __init__(self, in_channels=17, channels=channels, num_res_blocks=num_res_blocks, activation=activation):
+    def __init__(self, in_channels=17, channels=config['channels'], num_res_blocks=config['num_res_blocks'], activation=get_activation(config['activation'])):
         super(ResNet, self).__init__()
         self.in_channels = in_channels
         self.num_res_blocks = num_res_blocks
@@ -87,7 +81,7 @@ class ResNet(nn.Module):
         return policy, value
 
 
-def train(agent, optimizer, transition_dataset, clip_eps=clip_eps, entropy_coef=entropy_coef, value_coef=value_coef, epochs=epochs, batch_size=batch_size):
+def train(agent, optimizer, transition_dataset, clip_eps=config['clip_eps'], entropy_coef=config['entropy_coef'], value_coef=config['value_coef'], epochs=config['epochs'], batch_size=config['batch_size']):
     loader = DataLoader(transition_dataset, batch_size=batch_size, shuffle=True)
     agent.train()
 

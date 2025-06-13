@@ -27,7 +27,7 @@ class Node:
     def select_child_ucb(self):
         def _ucb(child):
             q = child.total_reward / (child.visits + 1e-6)
-            u = c_puct * math.sqrt(math.log(self.visits + 1) / (child.visits + 1e-6))
+            u = config['c_puct'] * math.sqrt(math.log(self.visits + 1) / (child.visits + 1e-6))
             return q + u
 
         return max(self.children.items(), key=lambda x: _ucb(x[1]))

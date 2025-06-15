@@ -1,13 +1,30 @@
+import pickle
 import os
 import importlib
 import re
 import agent.mcts_ppo_pvl_resnet.agent as mcts_ppo_pvl_resnet
 from agent import *
+from training_data_collection import *
 
 
 class TrainingParadigms:
     def __init__(self, instance):
+
+    def mcts_guided_ppo(self):
+        PpoDataCollection()
+
+
+class DataCollectionParadigms:
+    def __init__(self, instance):
         pass
+
+
+class MixedParadigm:
+    def __init__(self, instance):
+        pass
+
+    
+
 
 # Agent names MUST be in snake_case matching the folder name
 def create_agent_instance(agent_name):
@@ -44,6 +61,8 @@ def create_agent_instance(agent_name):
     
     AgentClass = getattr(agent_module, agent_class_name)
     agent = AgentClass()
+    with open(os.path.join(instance_path, 'agent.pkl'), 'wb') as f:
+        pickle.dump(agent, f)
     return agent, instance_path
 
 def _normalize_name(name: str) -> str:

@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from config.config_loader import get_config
+from config.config_tools import get_config
 from utils import *
 from torch.utils.data import DataLoader
 
@@ -79,30 +79,3 @@ class ResNet(nn.Module):
         policy = self.policy_head(x)
         value = self.value_head(x)
         return policy, value
-
-
-def train(agent, optimizer, transition_dataset, clip_eps=config['clip_eps'], entropy_coef=config['entropy_coef'], value_coef=config['value_coef'], epochs=config['epochs'], batch_size=config['batch_size']):
-    loader = DataLoader(transition_dataset, batch_size=batch_size, shuffle=True)
-    agent.train()
-
-    for epoch in range(epochs):
-        for states, actions, old_log_probs, returns, advantages in loader:
-            policy_logits, values = agent(states)
-            # Apply softmax to policy logits to get probabilities
-            dist = torch.distributions.Categorical(logits=policy_logits)
-            # Recalculate log probabilities to normalize the policy
-            new_log_probs = dist.log_prob(actions)
-
-            # PPO clipped surrogate objective
-            ratio = torch.exp(new_log_probs - old_log_probs)
-            clip_adv = torch.clamp(ratio, 1 - clip_eps, 1 + clip_eps) * advantages
-            policy_loss = -torch.min(ratio * advantages, clip_adv).mean()
-
-            value_loss = F.mse_loss(values.squeeze(), returns)
-            entropy = dist.entropy().mean()
-
-            loss = policy_loss + value_coef * value_loss - entropy_coef * entropy
-
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()

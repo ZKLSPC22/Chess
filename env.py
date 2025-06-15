@@ -23,6 +23,9 @@ class ChessEnv(gym.Env):
         }
         self.idx_to_piece_type = {v: k for k, v in self.piece_type_to_idx.items()}
     
+    def initial_state(self):
+        return self._board_to_state(chess.Board())
+
     def reset(self, *, seed: int | None = None, options: dict | None = None) -> tuple[torch.Tensor, dict]:
         """
         Resets the environment to its initial state.

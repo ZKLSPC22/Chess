@@ -3,7 +3,7 @@ import torch.nn.functional as F
 import math
 from torch.utils.data import DataLoader
 from env import ChessEnv
-from config.config_loader import get_config
+from utils import get_config
 
 
 # Load corresponding config dictionary

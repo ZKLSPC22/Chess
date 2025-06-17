@@ -43,6 +43,7 @@ class PpoTrain:
             self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
+        return self.agent
 
 
 class PpoDataCollection:
@@ -52,7 +53,6 @@ class PpoDataCollection:
         self.new_agent = new_agent
         self.old_agent = old_agent
         self.data_set_format = ('state', 'action', 'old_log_prob', 'return', 'advantage')
-        self.restrictions = set('value_policy')
         self.data_set = []
     
     def collect(self):

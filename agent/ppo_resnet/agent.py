@@ -1,21 +1,15 @@
 import torch
 import torch.optim as optim
-import learning.ppo as ppo
-import planning.mcts as mcts
-import os
-from utils import safe_merge, override_config
+import learning.ppo as ppo 
 import env
+from utils import safe_merge, override_config
 
 
-# New configurations are of higher priority
 agent_config = {}
-# Merge all inherited configs
-config = safe_merge(ppo.config, mcts.config)
-# Override configs
-config = override_config(config, agent_config)
+config = override_config(ppo.config, agent_config)
 
 # Class name MUST match the agent name for importlib to work
-class mcts_ppo_pvl_resnet:
+class ppo_resnet:
     def __init__(self):
         self.model = ppo.ResNet(
             in_channels=17,

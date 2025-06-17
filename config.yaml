@@ -9,7 +9,7 @@ ppo:
 
 mcts:
   sim_num: 800
-  cpuct: 1.5
+  c_puct: 1.5
   dirichlet_alpha: 0.3
   temperature: 1.0
   value_coef: 0.5

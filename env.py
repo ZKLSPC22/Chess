@@ -63,30 +63,24 @@ class ChessEnv(gym.Env):
         new_state = self._board_to_state(new_board)
         return new_state, reward, terminated, False, {}
 
-    def render(self, mode: str = 'human'):
-        """
-        Renders the current state of the environment.
-
-        Args:
-            mode (str): The mode to render with. Only 'human' is supported for custom rendering.
-                        Defaults to 'human'.
-        """
-        if mode != 'human':
-            super().render(mode=mode)
-            return
-        
+    def render(self, human_color: chess.Color):
         # Unicode characters for chess pieces
         unicode_pieces = {
             'P': '♙', 'N': '♘', 'B': '♗', 'R': '♖', 'Q': '♕', 'K': '♔',
             'p': '♟', 'n': '♞', 'b': '♝', 'r': '♜', 'q': '♛', 'k': '♚',
             None: ' ' 
         }
+        rank_range = range(7, -1, -1) if human_color == chess.WHITE else range(8)
+        file_range = range(8) if human_color == chess.WHITE else range(7, -1, -1)
+        file_names = chess.FILE_NAMES if human_color == chess.WHITE else list(reversed(chess.FILE_NAMES))
+        rank_names = chess.RANK_NAMES if human_color == chess.WHITE else list(reversed(chess.RANK_NAMES))
+        
         # Print the board with files (columns) and ranks (rows)
-        print("\n   " + "  ".join(chess.FILE_NAMES)) # Column letters
+        print("\n   " + "  ".join(file_names)) # Column letters
         print("  +" + "---" * 8 + "+") # Top border
-        for rank_idx in range(7, -1, -1): # Ranks 8 down to 1
-            print(f"{chess.RANK_NAMES[rank_idx]} |", end="")
-            for file_idx in range(8): # Files A to H
+        for rank_idx in rank_range: # Ranks 8 down to 1
+            print(f"{rank_names[rank_idx]} |", end="")
+            for file_idx in file_range: # Files A to H
                 square = chess.square(file_idx, rank_idx)
                 piece = self.board.piece_at(square)
                 
@@ -130,9 +124,21 @@ class ChessEnv(gym.Env):
     def get_legal_actions(self, state):
         board = self._state_to_board(state)
         legal_moves = [move.uci() for move in board.legal_moves]
-        legal_actions = [self._encode_uci_to_action_index(move) for move in legal_moves]
+        legal_actions = [self.encode_uci_to_action_index(move) for move in legal_moves]
         return legal_actions
-
+    
+    def encode_uci_to_action_index(self, uci: str) -> int:
+        move = chess.Move.from_uci(uci)
+        from_square = move.from_square
+        to_square = move.to_square
+        promotion = move.promotion
+        if promotion is None:
+            return from_square * 73 + to_square
+        else:
+            file = chess.square_file(to_square)
+            promo_type = self.piece_type_to_idx[promotion]
+            return from_square * 73 + 56 + file * 4 + promo_type
+    
     def _get_reward(self, board: chess.Board) -> torch.Tensor:
         """
         Calculates the reward based on the game's outcome.
@@ -246,15 +252,3 @@ class ChessEnv(gym.Env):
             promo_type = (to_promo - 56) % 4
             promotion = [chess.QUEEN, chess.ROOK, chess.BISHOP, chess.KNIGHT][promo_type]
         return from_square, to_square, promotion
-
-    def _encode_uci_to_action_index(self, uci: str) -> int:
-        move = chess.Move.from_uci(uci)
-        from_square = move.from_square
-        to_square = move.to_square
-        promotion = move.promotion
-        if promotion is None:
-            return from_square * 73 + to_square
-        else:
-            file = chess.square_file(to_square)
-            promo_type = self.piece_type_to_idx[promotion]
-            return from_square * 73 + 56 + file * 4 + promo_type

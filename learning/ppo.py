@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from config.config_tools import get_config
 from utils import *
 from torch.utils.data import DataLoader
 

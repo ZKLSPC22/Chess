@@ -19,13 +19,6 @@ def get_activation(activation):
         return nn.Softmax(dim=1)
     else:
         raise ValueError(f"Unsupported activation function: {activation}")
-    
-
-def check_compatibility(agent, training, data):
-    if training.restrictions.issubset(agent.training_restrictions) and data.restrictions.issubset(agent.data_restrictions):
-        return True
-    return False
-
 
 _config = None
 

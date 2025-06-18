@@ -3,7 +3,7 @@ import os      # File/directory operations
 import importlib  # Dynamic module importing
 import re      # Regular expressions for name normalization
 import yaml    # YAML config file handling
-import env as env
+import env
 import random
 import chess
 import time
@@ -43,26 +43,118 @@ class MixedParadigm:
 
 
 def play_game(agent_instance, human_color=None):
-    env = env.ChessEnv()
+    chess_env = env.ChessEnv()
     if human_color is None:
         human_color = random.choice([chess.WHITE, chess.BLACK])
     elif human_color not in [chess.WHITE, chess.BLACK]:
         raise ValueError("Invalid human color")
-    state = env.initial_state()
-    while not env.board.is_game_over():
-        if env.board.turn == human_color:
-            action = input("Enter your move: ")
-            action = env.encode_uci_to_action_index(action)
-            state, _, _, _, _ = env.step(state, action)
-        else:
+    
+    state = chess_env.initial_state()
+    
+    # Color codes for text
+    BLUE_COLOR = '\033[1;34m'  # Bright blue
+    RED_COLOR = '\033[1;31m'   # Bright red
+    RESET_COLOR = '\033[0m'    # Reset color
+    
+    # Welcome message
+    print("\n" + "="*50)
+    print("CHESS GAME - HUMAN vs AI")
+    print("="*50)
+    print(f"You are playing as: {BLUE_COLOR}BLUE{RESET_COLOR}" if human_color else f"You are playing as: {RED_COLOR}RED{RESET_COLOR}")
+    print(f"AI is playing as: {RED_COLOR}RED{RESET_COLOR}" if human_color else f"AI is playing as: {BLUE_COLOR}BLUE{RESET_COLOR}")
+    print("="*50)
+    time.sleep(0.5)
+    
+    while not chess_env.board.is_game_over():
+        # Show the board first
+        chess_env.render(human_color)
+        time.sleep(0.5)
+        
+        if chess_env.board.turn == human_color:
+            # Human's turn
+            current_player = "BLUE" if human_color else "RED"
+            current_color = BLUE_COLOR if human_color else RED_COLOR
+            print(f"\nYour turn ({current_color}{current_player}{RESET_COLOR})")
             time.sleep(0.5)
-            action = agent_instance.select_action(state)
-            state, _, _, _, _ = env.step(state, action)
-        env.render(human_color)
-    if env.board.is_checkmate():
-        print(f"Game over! {human_color} wins!")
+            print("Enter move (e.g., e2e4) or 'help' for examples:")
+            time.sleep(0.3)
+            
+            while True:
+                action = input("Move: ").strip().lower()
+                
+                if action == 'help':
+                    print("\nMove examples:")
+                    print("  e2e4    - Move pawn from e2 to e4")
+                    print("  d7d5    - Move pawn from d7 to d5")
+                    print("  g1f3    - Move knight from g1 to f3")
+                    print("  e7e8q   - Pawn promotion to queen")
+                    time.sleep(0.5)
+                    continue
+                elif not action:
+                    print("Please enter a move!")
+                    time.sleep(0.3)
+                    continue
+                
+                try:
+                    action_idx = chess_env.encode_uci_to_action_index(action)
+                    legal_actions = chess_env.get_legal_actions(state)
+                    if action_idx not in legal_actions:
+                        print(f"Invalid move: {action}")
+                        time.sleep(0.3)
+                        continue
+                    break
+                except Exception as e:
+                    print(f"Invalid format: {action}. Use format like 'e2e4'")
+                    time.sleep(0.3)
+                    continue
+            
+            print(f"You played: {action}")
+            time.sleep(0.5)
+            state, _, _, _, _ = chess_env.step(state, action_idx)
+            
+        else:
+            # AI's turn
+            current_player = "BLUE" if not human_color else "RED"
+            current_color = BLUE_COLOR if not human_color else RED_COLOR
+            print(f"\nAI turn ({current_color}{current_player}{RESET_COLOR})")
+            time.sleep(0.5)
+            print("AI is thinking...")
+            time.sleep(0.5)
+            
+            action = agent_instance.select_action(state, chess_env)
+            
+            # Convert action back to UCI for display
+            from_square, to_square, promotion = chess_env._decode_action_index(action)
+            ai_move = chess.Move(from_square, to_square, promotion=promotion).uci()
+            
+            print(f"AI played: {ai_move}")
+            time.sleep(0.5)
+            state, _, _, _, _ = chess_env.step(state, action)
+        
+        # Turn separator
+        print("-" * 50)
+    
+    # Game over
+    print("\n" + "="*50)
+    print("GAME OVER")
+    print("="*50)
+    time.sleep(0.5)
+    
+    # Final board state
+    chess_env.render(human_color)
+    time.sleep(0.5)
+    
+    # Determine winner
+    if chess_env.board.is_checkmate():
+        winner = "BLUE" if chess_env.board.turn == chess.BLACK else "RED"
+        winner_color = BLUE_COLOR if chess_env.board.turn == chess.BLACK else RED_COLOR
+        print(f"\nCHECKMATE! {winner_color}{winner}{RESET_COLOR} wins!")
+    elif chess_env.board.is_stalemate():
+        print(f"\nSTALEMATE! It's a draw!")
     else:
-        print("Game over! It's a draw!")
+        print(f"\nDRAW! Game ended in a draw!")
+    
+    print("Thanks for playing!")
 
 
 # Agent names MUST be in snake_case matching the folder name

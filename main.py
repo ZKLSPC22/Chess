@@ -10,14 +10,32 @@ paradigms = set('ppo_resnet')
 def main():
     parser = argparse.ArgumentParser(
         description="""
-        Flexible Chess AI Training and Evaluation Framework.
-        
-        Use the following commands to train and evaluate your agents:
-        --vs-human to play against a trained model interactively
-    """,
-    epilog="""
-    """,
-    formatter_class=argparse.RawTextHelpFormatter
+Flexible Chess AI Training and Evaluation Framework.
+
+This framework provides tools to train, evaluate, and play against neural network-based chess agents.
+It supports modular agent design, instance management, multiple training paradigms, and interactive play.
+
+Typical usage includes:
+    - Creating new agent instances with custom configurations (e.g. MCTS guided PPO using ResNet)
+    - Training agents using different paradigms (e.g. recursive self-play, combination of Value-Policy loss and PPO)
+    - Listing available agents, instances, and associated configurations
+    - Playing interactively against a trained model
+
+Example usage:
+    python main.py --agent ppo_resnet --create (create a new instance of the ppo_resnet agent)
+    python main.py --agent ppo_resnet --instance ppo_resnet_1 --train --paradigm mcts_guided_ppo_self_play (train the ppo_resnet_1 instance using the mcts_guided_ppo_self_play paradigm)
+    python main.py --vs-human ppo_resnet_1 (play against the trained model interactively)
+        """,
+        epilog="""
+Additional Notes:
+    - Paradigms define specific training strategies. Use --paradigm to specify one.
+    - Instances are saved under agent/<agent_name>/<instance_name>/ and contain weights, configs, etc.
+    - Playing against a model uses the latest saved weights in the specified instance directory.
+    - To modify or inspect configs, edit or view config.yaml inside the instance directory.
+
+Developed for research and experimentation with reinforcement learning in games like Chess.
+        """,
+        formatter_class=argparse.RawTextHelpFormatter
     )
 
     # --agent and --instance arguments
@@ -32,7 +50,7 @@ def main():
 
     # --play argument
     parser.add_argument('--create', action='store_true', help='Create a new agent instance')
-    parser.add_argument('--vs-human', type=str, help='Play against a trained model interactively')
+    parser.add_argument('--vs-human', action='store_true', help='Play against a trained model interactively')
     parser.add_argument('--train', action='store_true', help='Train an agent')
     parser.add_argument('--paradigm', type=str, help='Name of the paradigm to use for training')
 
@@ -116,8 +134,44 @@ def main():
         print(f"Training completed.")
         return
 
+    # --vs-human command logic
+    if args.vs_human:
+        if not args.agent or not args.instance:
+            print("Please specify both --agent and --instance to play against a trained model.")
+            return
+        
+        instance_path = os.path.join('agent', args.agent, args.instance)
+        if not os.path.isdir(instance_path):
+            print(f"Instance **{args.instance}** not found.")
+            return
+        
+        with open(os.path.join(instance_path, 'instance.pkl'), 'rb') as f:
+            agent_instance = pickle.load(f)
+        
+        print(f"Playing against trained model **{args.instance}** of agent **{args.agent}**.")
+        play_game(agent_instance)
+        return
+
+    # --vs-human command logic
+    if args.vs_human:
+        if not args.agent:
+            print("Please specify an agent to play against.")
+            return
+        
+        instance_path = os.path.join('agent', args.agent, args.instance)
+        if not os.path.isdir(instance_path):
+            print(f"Instance **{args.instance}** not found.")
+            return
+        
+        with open(os.path.join(instance_path, 'instance.pkl'), 'rb') as f:
+            agent_instance = pickle.load(f)
+        
+        print(f"Playing against trained model **{args.instance}** of agent **{args.agent}**.")
+        play_game(agent_instance)
+        return
 
 def _retrieve_paradigm(trainer, paradigm_name):
+
     if not hasattr(trainer, paradigm_name):
         print(f"Training paradigm <{paradigm_name}> not found.")
         print("Available paradigms:")

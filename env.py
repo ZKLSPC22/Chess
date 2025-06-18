@@ -1,21 +1,22 @@
 import gymnasium as gym
 import chess
 import torch
+import numpy as np
 from gymnasium import spaces
 
 
 class ChessEnv(gym.Env):
-    _WHITE_PIECE_COLOR = '\033[97m'
-    _BLACK_PIECE_COLOR = '\033[30m'
-    _LIGHT_SQUARE_BG = '\033[47m'
-    _DARK_SQUARE_BG = '\033[100m'
+    _WHITE_PIECE_COLOR = '\033[1;34m'  # Bright blue for white pieces
+    _BLACK_PIECE_COLOR = '\033[1;31m'  # Bright red for black pieces
+    _LIGHT_SQUARE_BG = '\033[48;5;255m'  # Very light gray/white background
+    _DARK_SQUARE_BG = '\033[48;5;240m'  # Medium gray background
     _RESET_COLOR = '\033[0m'
 
     def __init__(self):
         """Initializes the ChessEnv environment."""
         self.board = chess.Board()
         self.action_space = spaces.Discrete(4672)
-        self.observation_space = spaces.Box(low=0, high=1, shape=(17, 8, 8), dtype=torch.float32)
+        self.observation_space = spaces.Box(low=0, high=1, shape=(17, 8, 8), dtype=np.float32)
 
         self.piece_type_to_idx = {
             chess.PAWN: 0, chess.KNIGHT: 1, chess.BISHOP: 2,
@@ -55,6 +56,8 @@ class ChessEnv(gym.Env):
         new_board = board.copy()
         if move in new_board.legal_moves:
             new_board.push(move)
+            # Update the internal board object for rendering
+            self.board = new_board
         else:
             return state, -10.0, False, False, {"error": "Illegal move"}
         
@@ -76,10 +79,10 @@ class ChessEnv(gym.Env):
         rank_names = chess.RANK_NAMES if human_color == chess.WHITE else list(reversed(chess.RANK_NAMES))
         
         # Print the board with files (columns) and ranks (rows)
-        print("\n   " + "  ".join(file_names)) # Column letters
-        print("  +" + "---" * 8 + "+") # Top border
+        print("\n     " + "   ".join(file_names)) # Column letters with proper spacing
+        print("   +" + "---" * 8 + "+") # Top border
         for rank_idx in rank_range: # Ranks 8 down to 1
-            print(f"{rank_names[rank_idx]} |", end="")
+            print(f" {rank_names[rank_idx]} |", end="")
             for file_idx in file_range: # Files A to H
                 square = chess.square(file_idx, rank_idx)
                 piece = self.board.piece_at(square)
@@ -95,31 +98,16 @@ class ChessEnv(gym.Env):
                     piece_color_code = self._WHITE_PIECE_COLOR if piece.color == chess.WHITE else self._BLACK_PIECE_COLOR
                 
                 print(f"{bg_color}{piece_color_code} {piece_symbol} {self._RESET_COLOR}", end="")
-            print(f"| {chess.RANK_NAMES[rank_idx]}{self._RESET_COLOR}")
-        print("  +" + "---" * 8 + "+") # Bottom border
-        print("   " + "  ".join(chess.FILE_NAMES)) # Column letters again
+            print(f"| {rank_names[rank_idx]}{self._RESET_COLOR}")
+        print("   +" + "---" * 8 + "+") # Bottom border
+        print("     " + "   ".join(file_names)) # Column letters again with proper spacing
 
-        # Print game status information
-        print(f"Turn: {'White' if self.board.turn == chess.WHITE else 'Black'}")
-        if self.board.is_checkmate():
-            print(f"Status: Checkmate! Winner: {'Black' if self.board.turn == chess.WHITE else 'White'}")
-        elif self.board.is_stalemate(): print("Status: Stalemate!")
-        elif self.board.is_insufficient_material(): print("Status: Insufficient Material!")
-        elif self.board.is_seventyfive_moves(): print("Status: Seventy-five move rule!")
-        elif self.board.is_fivefold_repetition(): print("Status: Fivefold repetition!")
-        elif self.board.is_check(): print("Status: Check!")
+        # Show last move if available
+        if self.board.move_stack:
+            last_move = self.board.peek().uci()
+            print(f"Last move: {last_move}")
         
-        # Display castling availability
-        castling_rights_str = []
-        if self.board.has_kingside_castling_rights(chess.WHITE): castling_rights_str.append("K")
-        if self.board.has_queenside_castling_rights(chess.WHITE): castling_rights_str.append("Q")
-        if self.board.has_kingside_castling_rights(chess.BLACK): castling_rights_str.append("k")
-        if self.board.has_queenside_castling_rights(chess.BLACK): castling_rights_str.append("q")
-        print(f"Castling Rights: {''.join(castling_rights_str) if castling_rights_str else '-'}")
-        if self.board.ep_square: print(f"En passant target: {chess.square_name(self.board.ep_square)}")
-        print(f"Last move: {self.board.peek().uci() if self.board.move_stack else 'None'}")
         print(self._RESET_COLOR, end='') # Ensure terminal color is reset
-        print() # Newline for clean output
 
     def get_legal_actions(self, state):
         board = self._state_to_board(state)

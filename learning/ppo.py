@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from utils import *
-from torch.utils.data import DataLoader
 
 
 # Load corresponding config dictionary
@@ -31,7 +30,7 @@ class ResBlock(nn.Module):
 class PolicyHead(nn.Module):
     def __init__(self, channels, activation):
         super().__init__()
-        self.conv = nn.Conv2d(channels, 2)
+        self.conv = nn.Conv2d(channels, 2, kernel_size=3, padding=1)
         self.bn = nn.BatchNorm2d(2)
         self.activation = activation
         self.fc = nn.Linear(128, 4672)

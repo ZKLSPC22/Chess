@@ -1,9 +1,10 @@
-from core_logic import create_agent_instance, override_agent_instance, play_game, TrainingParadigms
+from core_logic import create_agent_instance, override_agent_instance, vs_human, vs_agent_with_render, TrainingParadigms, load_instance
 import os
 import pickle
 import yaml
 import time
 import argparse
+import importlib
 
 paradigms = set('ppo_resnet')
 
@@ -40,7 +41,9 @@ Developed for research and experimentation with reinforcement learning in games 
 
     # --agent and --instance arguments
     parser.add_argument('--agent', type=str, help='Name of the agent (e.g. ppo_resnet)')
-    parser.add_argument('--instance', type=str, help='Name of the instance (e.g. ppo_resnet_1)')
+    parser.add_argument('--instance', type=str, help='Name of the instance (e.g. instance1)')
+    parser.add_argument('--opponent', type=str, help='Name of the opponent (e.g. ppo_resnet)')
+    parser.add_argument('--opponent_instance', type=str, help='Name of the opponent instance (e.g. instance1)')
     
     # --list argument
     parser.add_argument('--list', action='store_true', help=(
@@ -53,6 +56,7 @@ Developed for research and experimentation with reinforcement learning in games 
     parser.add_argument('--vs-human', action='store_true', help='Play against a trained model interactively')
     parser.add_argument('--train', action='store_true', help='Train an agent')
     parser.add_argument('--paradigm', type=str, help='Name of the paradigm to use for training')
+    parser.add_argument('--observe', action='store_true', help='Observe models playing against each other')
 
     args = parser.parse_args()
 
@@ -145,29 +149,31 @@ Developed for research and experimentation with reinforcement learning in games 
             print(f"Instance **{args.instance}** not found.")
             return
         
-        with open(os.path.join(instance_path, 'instance.pkl'), 'rb') as f:
-            agent_instance = pickle.load(f)
+        agent_instance = load_instance(instance_path)
         
         print(f"Playing against trained model **{args.instance}** of agent **{args.agent}**.")
-        play_game(agent_instance)
+        vs_human(agent_instance)
         return
 
-    # --vs-human command logic
-    if args.vs_human:
-        if not args.agent:
-            print("Please specify an agent to play against.")
+    # --observe command logic
+    if args.observe:
+        if not args.agent or not args.instance or not args.opponent or not args.opponent_instance:
+            print("Please specify both --agent and --instance to observe models playing against each other.")
             return
         
         instance_path = os.path.join('agent', args.agent, args.instance)
-        if not os.path.isdir(instance_path):
-            print(f"Instance **{args.instance}** not found.")
+        opponent_instance_path = os.path.join('agent', args.opponent, args.opponent_instance)
+        if not os.path.isdir(instance_path) or not os.path.isdir(opponent_instance_path):
+            if not os.path.isdir(instance_path):
+                print(f"Instance **{args.instance}** not found.")
+            if not os.path.isdir(opponent_instance_path):
+                print(f"Instance **{args.opponent_instance}** not found.")
             return
         
-        with open(os.path.join(instance_path, 'instance.pkl'), 'rb') as f:
-            agent_instance = pickle.load(f)
-        
-        print(f"Playing against trained model **{args.instance}** of agent **{args.agent}**.")
-        play_game(agent_instance)
+        print(f"Observing models playing against each other.")
+        agent_instance = load_instance(instance_path)
+        opponent_instance = load_instance(opponent_instance_path)
+        vs_agent_with_render(agent_instance, opponent_instance)
         return
 
 def _retrieve_paradigm(trainer, paradigm_name):
@@ -180,7 +186,6 @@ def _retrieve_paradigm(trainer, paradigm_name):
                 print(f"- {m}")
         exit(1)
     return getattr(trainer, paradigm_name)
-
 
 if __name__ == "__main__":
     main()

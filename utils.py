@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import yaml
+import chess
 import os
 
 
@@ -54,3 +55,15 @@ def override_config(config, override_config):
     for k, v in override_config.items():
         config[k] = v
     return config
+
+def action_index_to_uci(action_index, chess_env):
+    from_square = action_index // 73
+    to_promo = action_index % 73
+    if to_promo < 56:
+        to_square = to_promo
+        promotion = None
+    else:
+        to_square = (to_promo - 56) // 4 + (from_square // 8 == 6) * 8
+        promo_type = (to_promo - 56) % 4
+        promotion = [chess.QUEEN, chess.ROOK, chess.BISHOP, chess.KNIGHT][promo_type]
+    return chess.Move(from_square, to_square, promotion=promotion).uci()

@@ -3,6 +3,8 @@ import chess
 import torch
 import numpy as np
 from gymnasium import spaces
+import sys
+import os
 
 
 class ChessEnv(gym.Env):
@@ -23,6 +25,11 @@ class ChessEnv(gym.Env):
             chess.ROOK: 3, chess.QUEEN: 4, chess.KING: 5
         }
         self.idx_to_piece_type = {v: k for k, v in self.piece_type_to_idx.items()}
+
+        # Move encoding helpers based on AlphaZero
+        self.queen_move_directions = [(0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-1, 0), (-1, 1)]
+        self.knight_move_deltas = [(1, 2), (2, 1), (2, -1), (1, -2), (-1, -2), (-2, -1), (-2, 1), (-1, 2)]
+        self.underpromotion_pieces = [chess.KNIGHT, chess.BISHOP, chess.ROOK]
     
     def initial_state(self):
         return self._board_to_state(chess.Board())
@@ -71,43 +78,69 @@ class ChessEnv(gym.Env):
         unicode_pieces = {
             'P': '♙', 'N': '♘', 'B': '♗', 'R': '♖', 'Q': '♕', 'K': '♔',
             'p': '♟', 'n': '♞', 'b': '♝', 'r': '♜', 'q': '♛', 'k': '♚',
-            None: ' ' 
+            None: ' '
         }
         rank_range = range(7, -1, -1) if human_color == chess.WHITE else range(8)
         file_range = range(8) if human_color == chess.WHITE else range(7, -1, -1)
         file_names = chess.FILE_NAMES if human_color == chess.WHITE else list(reversed(chess.FILE_NAMES))
         rank_names = chess.RANK_NAMES if human_color == chess.WHITE else list(reversed(chess.RANK_NAMES))
-        
+
+        # Optionally disable color on Windows if not supported
+        use_color = True
+        if os.name == 'nt':
+            # Try to enable ANSI escape codes on Windows 10+
+            try:
+                import ctypes
+                kernel32 = ctypes.windll.kernel32
+                kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
+            except Exception:
+                use_color = False
+        def colorize(s, code):
+            return f"{code}{s}{self._RESET_COLOR}" if use_color else s
+
         # Print the board with files (columns) and ranks (rows)
-        print("\n     " + "   ".join(file_names)) # Column letters with proper spacing
-        print("   +" + "---" * 8 + "+") # Top border
-        for rank_idx in rank_range: # Ranks 8 down to 1
+        # Centered file letters with 4-space wide cells
+        print("\n     " + "   ".join(file_names))
+        print("   +" + "----" * 8 + "+")
+        for rank_idx in rank_range:  # Ranks 8 down to 1
+            # First line of the double-row square (empty for vertical centering)
+            print(f"   |", end="")
+            for file_idx in file_range:
+                is_light_square = (rank_idx + file_idx) % 2 != 0
+                bg_color = self._LIGHT_SQUARE_BG if is_light_square else self._DARK_SQUARE_BG
+                cell = "    "
+                print(f"{bg_color if use_color else ''}{cell}{self._RESET_COLOR if use_color else ''}", end="")
+            print(f"|   ")
+
+            # Second line: rank number and piece symbol centered
             print(f" {rank_names[rank_idx]} |", end="")
-            for file_idx in file_range: # Files A to H
+            for file_idx in file_range:
                 square = chess.square(file_idx, rank_idx)
                 piece = self.board.piece_at(square)
-                
-                # Set square background color
                 is_light_square = (rank_idx + file_idx) % 2 != 0
                 bg_color = self._LIGHT_SQUARE_BG if is_light_square else self._DARK_SQUARE_BG
                 
-                # Get piece symbol and color
-                piece_symbol = unicode_pieces[piece.symbol()] if piece else unicode_pieces[None]
+                piece_symbol = unicode_pieces[piece.symbol()] if piece else ' '
                 piece_color_code = ""
                 if piece:
                     piece_color_code = self._WHITE_PIECE_COLOR if piece.color == chess.WHITE else self._BLACK_PIECE_COLOR
                 
-                print(f"{bg_color}{piece_color_code} {piece_symbol} {self._RESET_COLOR}", end="")
-            print(f"| {rank_names[rank_idx]}{self._RESET_COLOR}")
-        print("   +" + "---" * 8 + "+") # Bottom border
-        print("     " + "   ".join(file_names)) # Column letters again with proper spacing
+                # Center the piece symbol in a 4-char wide cell
+                cell = f" {piece_symbol}  "
+                if use_color and piece:
+                    cell = f"{piece_color_code}{cell}{self._RESET_COLOR}"
+
+                print(f"{bg_color if use_color else ''}{cell}{self._RESET_COLOR if use_color else ''}", end="")
+            print(f"| {rank_names[rank_idx]}")
+        print("   +" + "----" * 8 + "+")  # Bottom border
+        print("     " + "   ".join(file_names))  # Column letters again
 
         # Show last move if available
         if self.board.move_stack:
             last_move = self.board.peek().uci()
             print(f"Last move: {last_move}")
-        
-        print(self._RESET_COLOR, end='') # Ensure terminal color is reset
+        if use_color:
+            print(self._RESET_COLOR, end='')  # Ensure terminal color is reset
 
     def get_legal_actions(self, state):
         board = self._state_to_board(state)
@@ -120,13 +153,59 @@ class ChessEnv(gym.Env):
         from_square = move.from_square
         to_square = move.to_square
         promotion = move.promotion
-        if promotion is None:
-            return from_square * 73 + to_square
+
+        from_file, from_rank = chess.square_file(from_square), chess.square_rank(from_square)
+        to_file, to_rank = chess.square_file(to_square), chess.square_rank(to_square)
+        
+        delta_file, delta_rank = to_file - from_file, to_rank - from_rank
+        
+        piece = self.board.piece_at(from_square)
+        if piece is None: return -1 # Should not happen for legal move
+        
+        move_type = -1
+        
+        # Underpromotion
+        if promotion is not None and promotion != chess.QUEEN:
+            try:
+                promo_idx = self.underpromotion_pieces.index(promotion)
+                direction_idx = delta_file + 1 # file delta -1,0,1 -> 0,1,2
+                move_type = 64 + promo_idx * 3 + direction_idx
+            except (ValueError, IndexError):
+                return -1
+        
+        # Knight move
+        elif piece.piece_type == chess.KNIGHT:
+            try:
+                knight_move_idx = self.knight_move_deltas.index((delta_file, delta_rank))
+                move_type = 56 + knight_move_idx
+            except ValueError:
+                return -1 # Should not happen
+                
+        # Queen-like move (includes normal pawn moves, king moves, and queen promotions)
         else:
-            file = chess.square_file(to_square)
-            promo_type = self.piece_type_to_idx[promotion]
-            return from_square * 73 + 56 + file * 4 + promo_type
-    
+            abs_delta_file, abs_delta_rank = abs(delta_file), abs(delta_rank)
+            
+            # Not a straight or diagonal line
+            if (delta_file != 0 and delta_rank != 0 and abs_delta_file != abs_delta_rank):
+                return -1
+            
+            distance = max(abs_delta_file, abs_delta_rank)
+            if distance == 0: return -1
+
+            norm_delta_file = delta_file // distance
+            norm_delta_rank = delta_rank // distance
+            
+            try:
+                direction_idx = self.queen_move_directions.index((norm_delta_file, norm_delta_rank))
+                move_type = direction_idx * 7 + (distance - 1)
+            except ValueError:
+                return -1
+        
+        if move_type == -1:
+            return -1
+            
+        return from_square * 73 + move_type
+
     def _get_reward(self, board: chess.Board) -> torch.Tensor:
         """
         Calculates the reward based on the game's outcome.
@@ -228,15 +307,57 @@ class ChessEnv(gym.Env):
         
         return board
 
-    # 4672 -> 73 * 64
     def _decode_action_index(self, action: int):
         from_square = action // 73
-        to_promo = action % 73
-        if to_promo < 56:
-            to_square = to_promo
-            promotion = None
-        else:
-            to_square = (to_promo - 56) // 4 + (from_square // 8 == 6) * 8
-            promo_type = (to_promo - 56) % 4
-            promotion = [chess.QUEEN, chess.ROOK, chess.BISHOP, chess.KNIGHT][promo_type]
+        move_type = action % 73
+        from_file, from_rank = chess.square_file(from_square), chess.square_rank(from_square)
+
+        to_square = -1  # Invalid default
+        promotion = None
+
+        # 1. Queen-like moves (0-55)
+        if 0 <= move_type < 56:
+            direction_idx = move_type // 7
+            distance = (move_type % 7) + 1
+            
+            delta_file, delta_rank = self.queen_move_directions[direction_idx]
+            to_file = from_file + delta_file * distance
+            to_rank = from_rank + delta_rank
+
+            if 0 <= to_file < 8 and 0 <= to_rank < 8:
+                to_square = chess.square(to_file, to_rank)
+                piece = self.board.piece_at(from_square)
+                if piece and piece.piece_type == chess.PAWN:
+                    if (self.board.turn == chess.WHITE and from_rank == 6 and to_rank == 7) or \
+                       (self.board.turn == chess.BLACK and from_rank == 1 and to_rank == 0):
+                        promotion = chess.QUEEN
+
+        # 2. Knight moves (56-63)
+        elif 56 <= move_type < 64:
+            delta_file, delta_rank = self.knight_move_deltas[move_type - 56]
+            to_file = from_file + delta_file
+            to_rank = from_rank + delta_rank
+            if 0 <= to_file < 8 and 0 <= to_rank < 8:
+                to_square = chess.square(to_file, to_rank)
+
+        # 3. Underpromotions (64-72)
+        elif 64 <= move_type < 73:
+            promo_idx = (move_type - 64) // 3
+            direction_idx = (move_type - 64) % 3
+            
+            promotion = self.underpromotion_pieces[promo_idx]
+            
+            if self.board.turn == chess.WHITE:
+                to_rank = from_rank + 1
+                to_file = from_file + (direction_idx - 1)
+            else: # BLACK
+                to_rank = from_rank - 1
+                to_file = from_file + (direction_idx - 1)
+            
+            if 0 <= to_file < 8 and 0 <= to_rank < 8:
+                to_square = chess.square(to_file, to_rank)
+
+        if to_square == -1:
+            return from_square, from_square, None
+
         return from_square, to_square, promotion

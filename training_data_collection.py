@@ -11,9 +11,10 @@ training_logger = logging.getLogger('training')
 
 # Technically, PPO is a offline and offpolicy training paradigm, however for importance sampling to work, we have to use data from a recent version of the agent, and intertwine training and data collection.
 class PpoTrain:
-    def __init__(self, agent, transition_dataset, train_config):
+    def __init__(self, agent, transition_dataset, train_config, optimizer):
         self.config = train_config
         self.agent = agent
+        self.optimizer = optimizer
         self.transition_dataset = transition_dataset
         self.loader = DataLoader(transition_dataset, batch_size=self.config['batch_size'], shuffle=True)
         self.agent_output = ('policy_logits', 'value')
@@ -108,9 +109,10 @@ class PpoDataCollection:
 
 
 class PolicyValueTrain:
-    def __init__(self, agent, dataset, train_config):
+    def __init__(self, agent, dataset, train_config, optimizer):
         self.config = train_config
         self.agent = agent
+        self.optimizer = optimizer
         self.dataset = dataset
         self.loader = DataLoader(dataset, batch_size=self.config['batch_size'], shuffle=True)
         self.agent_output = ('policy_logits', 'value')

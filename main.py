@@ -45,12 +45,14 @@ def main():
             final_agent_config = override_config(agent_specifics, defaults)
 
         if mode == 'train':
+            instance_dir = select_instance(agent_name)
             agent_instance = load_instance(instance_dir, final_agent_config)
             paradigm_executor = select_paradigm(agent_instance, instance_dir)
             
             paradigm_executor()
 
         elif mode == 'vs_human':
+            instance_dir = select_instance(agent_name)
             agent_instance = load_instance(instance_dir, final_agent_config)
             vs_human(agent_instance)
 

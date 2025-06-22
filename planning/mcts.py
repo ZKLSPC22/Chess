@@ -3,22 +3,16 @@ import torch.nn.functional as F
 import math
 from torch.utils.data import DataLoader
 from env import ChessEnv
-from utils import get_config
-
-
-# Load corresponding config dictionary
-config = get_config(__file__)
 
 
 class Node:
-    def __init__(self, state, sim_num=config['sim_num'], parent=None, use_variable_sim_num=config['use_variable_sim_num']):
+    def __init__(self, state, c_puct, parent=None):
         self.state = state
         self.parent = parent if parent is not None else {} # action -> parent node
         self.children = {} # action -> child node
         self.visits = 0
         self.total_reward = 0
-        self.sim_num = sim_num
-        self.use_variable_sim_num = use_variable_sim_num
+        self.c_puct = c_puct
         self.untried_actions = ChessEnv.get_legal_actions(state)
 
     def if_fully_expanded(self):
@@ -27,15 +21,18 @@ class Node:
     def select_child_ucb(self):
         def _ucb(child):
             q = child.total_reward / (child.visits + 1e-6)
-            u = config['c_puct'] * math.sqrt(math.log(self.visits + 1) / (child.visits + 1e-6))
+            u = self.c_puct * math.sqrt(math.log(self.visits + 1) / (child.visits + 1e-6))
             return q + u
 
         return max(self.children.items(), key=lambda x: _ucb(x[1]))
 
 
 class MCTS:
-    def __init__(self, agent, sim_num=config['sim_num'], c_puct=config['c_puct'], value_coef=config['value_coef']):
+    def __init__(self, agent, mcts_config):
         self.agent = agent
+        self.sim_num = mcts_config['sim_num']
+        self.c_puct = mcts_config['c_puct']
+        self.value_coef = mcts_config['value_coef']
         self.node_dict = {} # state -> node
                 
     def select_action(self, state):
@@ -68,7 +65,7 @@ class MCTS:
         if node.untried_actions:
             action = node.untried_actions.pop()
             next_state, reward, terminated, truncated, info = ChessEnv.step(node.state, action)
-            child = self.get_or_create_node(next_state, parent=node, action=action)
+            child, _ = self.get_or_create_node(next_state, parent=node, action=action)
             node.children[action] = child
             node = child
             path.append(node)
@@ -89,7 +86,7 @@ class MCTS:
                 node.parent[action] = parent
             return node, 'got'
         else:
-            node = Node(state.clone())
+            node = Node(state.clone(), c_puct=self.c_puct)
             if parent and action is not None:
                 node.parent[action] = parent
             self.node_dict[state] = node
@@ -123,11 +120,11 @@ class MCTS:
         return reward  # Return the final reward
 
 
-def train_mcts(agent, optimizer, mcts_dataset, value_coef=config['value_coef'], weight_decay=1e-4, epochs=config['epochs'], batch_size=config['batch_size']):
-    loader = DataLoader(mcts_dataset, batch_size=batch_size, shuffle=True)
+def train_mcts(agent, optimizer, mcts_dataset, train_config):
+    loader = DataLoader(mcts_dataset, batch_size=train_config['batch_size'], shuffle=True)
     agent.train()
 
-    for epoch in range(epochs):
+    for epoch in range(train_config['epochs']):
         for states, pi_targets, z_targets in loader:
             policy_logits, values = agent(states)  # (B, 4672), (B, 1)
 
@@ -135,7 +132,7 @@ def train_mcts(agent, optimizer, mcts_dataset, value_coef=config['value_coef'], 
             value_loss = F.mse_loss(values.squeeze(), z_targets)  # z_targets: (B,)
 
             l2_penalty = sum((p**2).sum() for p in agent.parameters())
-            loss = policy_loss + value_coef * value_loss + weight_decay * l2_penalty
+            loss = policy_loss + train_config['value_coef'] * value_loss + train_config['weight_decay'] * l2_penalty
 
             optimizer.zero_grad()
             loss.backward()

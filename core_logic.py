@@ -1,46 +1,66 @@
 import pickle  # For serializing agent instances
 import os      # File/directory operations
-import importlib  # Dynamic module importing
-import re      # Regular expressions for name normalization
-import yaml    # YAML config file handling
+import logging
 import env
 import random
 import chess
 import time
+import copy
 import agent.mcts_ppo_pvl_resnet.agent as mcts_ppo_pvl_resnet  # Specific agent implementation
 from agent import *
-from training_data_collection import *
-from utils import action_index_to_uci, override_config
+from training_data_collection import PpoDataCollection
+from learning.ppo import PpoTrain
+from utils.config import override_config, dump_instance_config, retrieve_instance_config
+from utils.misc import create_agent_class_object, generate_next_instance_dir
 
+logger = logging.getLogger(__name__)
+eval_logger = logging.getLogger('evaluation')
+training_logger = logging.getLogger('training')
 
 class TrainingParadigms:
     """Manages different training approaches"""
-    def __init__(self, instance):
-        pass
+    def __init__(self, agent_instance, instance_dir):
+        self.agent_instance = agent_instance
+        self.instance_dir = instance_dir
 
-    def ppo_self_play(self, agent_instance):
+    def list_paradigms(self):
+        """Returns a list of all available training paradigms"""
+        paradigms = []
+        for method_name in dir(self):
+            if not method_name.startswith('_') and callable(getattr(self, method_name)) and method_name != 'list_paradigms':
+                paradigms.append(method_name)
+        return paradigms
+
+    def ppo_self_play(self):
         # Creates two agent instances for self-play training
-        old_agent_instance, _ = create_agent_instance('ppo_resnet')
+        training_logger.info(f"Starting PPO self-play round for instance: {self.instance_dir}")
+        old_agent_instance = copy.deepcopy(self.agent_instance)
+        
         # Collect training data through self-play
-        PpoDataCollection(agent_instance, old_agent_instance)
+        training_logger.info("Collecting training data...")
+        data_collector = PpoDataCollection(
+            self.agent_instance,
+            old_agent_instance,
+            self.agent_instance.config['ppo_data_collection']
+        )
+        collected_data = data_collector.collect()
+        training_logger.info(f"Data collection complete. Collected {len(collected_data)} transitions.")
+        
         # Train and save new agent
-        new_agent_instance = PpoTrain(agent_instance, old_agent_instance).train()
-        override_agent_instance(new_agent_instance, agent_instance)
+        training_logger.info("Starting training...")
+        trainer = PpoTrain(self.agent_instance, collected_data)
+        new_agent_instance = trainer.train()
+        training_logger.info("Training complete.")
 
+        override_agent_instance(new_agent_instance, self.instance_dir)
+        self.agent_instance = new_agent_instance # Update in-memory agent
 
-class DataCollectionParadigms:
-    """Manages data collection strategies"""
-    def __init__(self, instance):
-        pass
-
-    def ppo_data_collection(self):
-        pass  # Placeholder for PPO data collection implementation
-
-
-class MixedParadigm:
-    """Combines multiple training approaches"""
-    def __init__(self, instance):
-        pass
+    def multi_round_ppo_self_play(self, rounds=5):
+        training_logger.info(f"Starting multi-round PPO self-play for {rounds} rounds.")
+        for i in range(rounds):
+            training_logger.info(f"--- Round {i+1}/{rounds} ---")
+            self.ppo_self_play()
+        training_logger.info("Multi-round PPO self-play finished.")
 
 
 # Play a game between a human and an agent
@@ -52,6 +72,8 @@ def vs_human(agent_instance, human_color=None):
         raise ValueError("Invalid human color")
     
     state = chess_env.initial_state()
+    eval_logger.info(f"Starting new game: Human vs. Agent ({agent_instance.__class__.__name__})")
+    eval_logger.info(f"Human is playing as {'WHITE' if human_color == chess.WHITE else 'BLACK'}")
     
     # Color codes for text
     BLUE_COLOR = '\033[1;34m'  # Bright blue
@@ -112,6 +134,7 @@ def vs_human(agent_instance, human_color=None):
             
             print(f"You played: {action}")
             time.sleep(0.5)
+            eval_logger.info(f"Human played move: {action}")
             state, _, _, _, _ = chess_env.step(state, action_idx)
             
         else:
@@ -130,6 +153,7 @@ def vs_human(agent_instance, human_color=None):
             ai_move = chess.Move(from_square, to_square, promotion=promotion).uci()
             
             print(f"AI played: {ai_move}")
+            eval_logger.info(f"Agent played move: {ai_move}")
             time.sleep(0.5)
             state, _, _, _, _ = chess_env.step(state, action)
         
@@ -151,10 +175,13 @@ def vs_human(agent_instance, human_color=None):
         winner = "BLUE" if chess_env.board.turn == chess.BLACK else "RED"
         winner_color = BLUE_COLOR if chess_env.board.turn == chess.BLACK else RED_COLOR
         print(f"\nCHECKMATE! {winner_color}{winner}{RESET_COLOR} wins!")
+        eval_logger.info(f"Game over: Checkmate. Winner: {'Human' if chess_env.board.turn != human_color else 'Agent'}")
     elif chess_env.board.is_stalemate():
         print(f"\nSTALEMATE! It's a draw!")
+        eval_logger.info("Game over: Stalemate.")
     else:
         print(f"\nDRAW! Game ended in a draw!")
+        eval_logger.info("Game over: Draw by other condition.")
     
     print("Thanks for playing!")
 
@@ -162,6 +189,7 @@ def vs_human(agent_instance, human_color=None):
 def vs_agent_with_render(agent_instance1, agent_instance2):
     chess_env = env.ChessEnv()
     state = chess_env.initial_state()
+    eval_logger.info(f"Starting new game: {agent_instance1.__class__.__name__} (W) vs. {agent_instance2.__class__.__name__} (B)")
 
     # Color codes for text
     BLUE_COLOR = '\033[1;34m'  # Bright blue
@@ -187,12 +215,14 @@ def vs_agent_with_render(agent_instance1, agent_instance2):
 
         if chess_env.board.turn == chess.WHITE:
             action = agent_instance1.select_action(state, chess_env)
-            action_uci = action_index_to_uci(action, chess_env)
+            action_uci = chess_env.action_index_to_uci(action)
             print(f"Agent 1 played: {action_uci}")
+            eval_logger.debug(f"Agent 1 selected action: {action_uci}")
         else:
             action = agent_instance2.select_action(state, chess_env)
-            action_uci = action_index_to_uci(action, chess_env)
+            action_uci = chess_env.action_index_to_uci(action)
             print(f"Agent 2 played: {action_uci}")
+            eval_logger.debug(f"Agent 2 selected action: {action_uci}")
 
         state, _, _, _, _ = chess_env.step(state, action)
         print("-"*50)
@@ -212,104 +242,104 @@ def vs_agent_with_render(agent_instance1, agent_instance2):
         winner = "BLUE" if chess_env.board.turn == chess.BLACK else "RED"
         winner_color = BLUE_COLOR if chess_env.board.turn == chess.BLACK else RED_COLOR
         print(f"\nCHECKMATE! {winner_color}{winner}{RESET_COLOR} wins!")
+        eval_logger.info(f"Game over: Checkmate. Winner: {'Agent 1 (W)' if chess_env.board.turn == chess.BLACK else 'Agent 2 (B)'}")
     elif chess_env.board.is_stalemate():
         print(f"\nSTALEMATE! It's a draw!")
+        eval_logger.info("Game over: Stalemate.")
     else:
         print(f"\nDRAW! Game ended in a draw!")
+        eval_logger.info("Game over: Draw by other condition.")
 
     print("Thanks for watching!")
 
 # Agent names MUST be in snake_case matching the folder name
-def create_agent_instance(agent_name, config_dict=None):
+def create_agent_instance(agent_name, agent_config, config_dict=None):
     """
-    Creates and saves a new agent instance
+    Creates and saves a new agent instance. The passed `agent_config` is the
+    final, resolved configuration for this new agent.
+    
+    Configuration Flow:
+    1. This function receives `agent_config`, which has already been resolved in
+       `main.py` by merging defaults with agent-specific settings from the main
+       `config.yaml`.
+    2. The agent object is created using this final configuration.
+    3. The agent's final configuration is then saved to the new instance's
+       local `config.yaml` to make it self-contained.
+    
     Returns: (agent_instance, instance_dir)
     """
-    agent_class_object = _create_agent_class_object(agent_name)
-    instance_dir = _generate_next_instance_dir(agent_name)
+    logger.info(f"Request to create new agent instance for agent type: {agent_name}")
+    if config_dict is None:
+        config_dict = {}
+        
+    agent_class_object = create_agent_class_object(agent_name, agent_config)
+    instance_dir = generate_next_instance_dir(agent_name)
     
     # Create directory and save agent instance
     os.makedirs(instance_dir, exist_ok=True)
     with open(os.path.join(instance_dir, 'instance.pkl'), 'wb') as f:
         pickle.dump(agent_class_object, f)
     
-    instance_config = override_config(config_dict, agent_class_object.config)
-    _dump_instance_configs(instance_dir, instance_config)
+    # The config passed in is already the final, resolved config.
+    # We dump this to the instance's config file.
+    dump_instance_config(instance_dir, agent_class_object.config)
+    logger.info(f"Agent '{agent_name}' instance created successfully at: {instance_dir}")
     
     return agent_class_object, instance_dir
 
 def override_agent_instance(agent, instance_dir, config_dict=None):
     """Overwrites existing agent with new instance"""
+    logger.info(f"Overwriting agent instance at: {instance_dir}")
+    if config_dict is None:
+        config_dict = {}
+
     if not os.path.exists(instance_dir):
+        logger.error(f"Attempted to override non-existent instance directory: {instance_dir}")
         raise FileNotFoundError(f"{instance_dir} does not exist.")
     
     # Save new agent instance
     with open(os.path.join(instance_dir, 'instance.pkl'), 'wb') as f:
         pickle.dump(agent, f)
 
-    instance_config = override_config(config_dict, agent.config)
-    _dump_instance_configs(instance_dir, instance_config)
+    # The agent's config is the source of truth, optionally overridden by a passed dict
+    final_config = override_config(config_dict, agent.config)
+    dump_instance_config(instance_dir, final_config)
+    logger.info(f"Agent instance at {instance_dir} has been overridden.")
 
-def load_instance(instance_dir):
+def load_instance(instance_dir, base_config):
+    """
+    Loads an agent instance and applies the latest configuration hierarchy.
+    
+    Configuration Flow:
+    1. Receives `base_config`, which contains the latest defaults and agent-specific
+       settings from the main `config.yaml`. This ensures that any updates to the
+       main config are considered when an old instance is loaded.
+    2. Loads the pickled agent object from the instance directory.
+    3. Applies the `base_config` to the loaded agent.
+    4. Loads the instance's own local `config.yaml`, which contains any
+       fine-tuning overrides specific to this instance.
+    5. Applies these local overrides on top of the `base_config`.
+    
+    This layered approach ensures that old instances are always up-to-date with
+    the project's latest default settings while preserving their specific tuning.
+    """
+    logger.info(f"Loading agent instance from: {instance_dir}")
     instance_path = os.path.join(instance_dir, 'instance.pkl')
-    config_path = os.path.join(instance_dir, 'config.yaml')
     if not os.path.exists(instance_path):
-        raise FileNotFoundError
-    if not os.path.exists(config_path):
-        agent_instance = pickle.load(open(instance_path, 'rb'))
-        return
-    agent_instance = pickle.load(open(instance_path, 'rb'))
-    instance_config = _retrieve_instance_configs(instance_dir)
-    agent_instance.config = override_config(instance_config, agent_instance.config)
+        logger.error(f"Instance file not found at: {instance_path}")
+        raise FileNotFoundError(f"{instance_path} does not exist.")
+    with open(instance_path, 'rb') as f:
+        agent_instance = pickle.load(f)
+    logger.debug(f"Successfully loaded instance object from {instance_path}")
+    
+    # 1. Start with the latest default configuration from the main config file.
+    agent_instance.config = base_config
+    
+    # 2. Load the instance-specific config file.
+    instance_specific_config = retrieve_instance_config(instance_dir)
+    
+    # 3. Apply the instance-specific tweaks on top of the latest defaults.
+    agent_instance.config = override_config(instance_specific_config, agent_instance.config)
+    
+    logger.info(f"Agent instance from {instance_dir} loaded and configured successfully.")
     return agent_instance
-
-# Create a yaml file and dump the instance configs
-def _dump_instance_configs(instance_dir, config_dict):
-    with open(os.path.join(instance_dir, 'config.yaml'), 'w') as f:
-        yaml.dump(config_dict, f)
-
-def _retrieve_instance_configs(instance_dir):
-    with open(os.path.join(instance_dir, 'config.yaml'), 'r') as f:
-        return yaml.safe_load(f)
-
-def _snake_to_pascal(name: str) -> str:
-    return ''.join(word.capitalize() for word in name.split('_'))
-
-def _create_agent_class_object(agent_name):
-    """Dynamically creates agent instance from module"""
-    agent_module = importlib.import_module(f'agent.{agent_name}.agent')
-    pascal_name = _snake_to_pascal(agent_name)
-    if hasattr(agent_module, pascal_name):
-        AgentClass = getattr(agent_module, pascal_name)
-        return AgentClass()
-    # fallback to old normalization logic for backward compatibility
-    agent_key = _normalize_name(agent_name)
-    for name in dir(agent_module):
-        if isinstance(getattr(agent_module, name), type) and _normalize_name(name) == agent_key:
-            AgentClass = getattr(agent_module, name)
-            return AgentClass()
-    # error if not found
-    available_classes = [name for name in dir(agent_module) if isinstance(getattr(agent_module, name), type)]
-    raise ValueError(
-        f"Couldn't find a matching agent class in agent.{agent_name}.agent.\nAvailable classes: {available_classes}"
-    )
-
-def _generate_next_instance_dir(agent_name):
-    """Generates next available instance directory path"""
-    agent_dir = os.path.join('agent', agent_name)
-    if not os.path.exists(agent_dir):
-        raise FileNotFoundError(f"Cannot create instance - {agent_dir} does not exist.")
-        
-    # Find all existing instance directories
-    instance_dirs = [
-        d for d in os.listdir(agent_dir)
-        if os.path.isdir(os.path.join(agent_dir, d)) and re.fullmatch(r'instance\d+', d)
-    ]
-    # Calculate next instance number
-    instance_nums = [int(d.replace('instance', '')) for d in instance_dirs]
-    next_instance_num = max(instance_nums, default=-1) + 1
-    return os.path.join(agent_dir, f'instance{next_instance_num}')
-
-def _normalize_name(name: str) -> str:
-    """Converts any case format to lowercase without special chars"""
-    return re.sub(r'[^a-zA-Z0-9]', '', name).lower()

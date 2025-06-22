@@ -5,6 +5,9 @@ import numpy as np
 from gymnasium import spaces
 import sys
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class ChessEnv(gym.Env):
@@ -45,6 +48,7 @@ class ChessEnv(gym.Env):
         Returns:
             tuple[torch.Tensor, dict]: A tuple containing the initial observation and an info dictionary.
         """
+        logger.info("Chess environment reset.")
         super().reset(seed=seed)
         self.board.reset()
         obs = self._board_to_state(self.board)
@@ -60,12 +64,15 @@ class ChessEnv(gym.Env):
         board = self._state_to_board(state)
         from_square, to_square, promotion = self._decode_action_index(action)
         move = chess.Move(from_square, to_square, promotion=promotion)
+        move_uci = move.uci()
         new_board = board.copy()
         if move in new_board.legal_moves:
             new_board.push(move)
             # Update the internal board object for rendering
             self.board = new_board
+            logger.debug(f"Step taken with legal move: {move_uci}. New FEN: {new_board.fen()}")
         else:
+            logger.warning(f"Illegal move {move_uci} attempted. Board state unchanged.")
             return state, -10.0, False, False, {"error": "Illegal move"}
         
         terminated = new_board.is_game_over()
@@ -74,6 +81,7 @@ class ChessEnv(gym.Env):
         return new_state, reward, terminated, False, {}
 
     def render(self, human_color: chess.Color):
+        logger.debug("Rendering board.")
         # Unicode characters for chess pieces
         unicode_pieces = {
             'P': '♙', 'N': '♘', 'B': '♗', 'R': '♖', 'Q': '♕', 'K': '♔',
@@ -361,3 +369,15 @@ class ChessEnv(gym.Env):
             return from_square, from_square, None
 
         return from_square, to_square, promotion
+
+    def action_index_to_uci(self, action_index: int) -> str:
+        """
+        Converts an action index to a UCI move string using the environment's encoding.
+        Args:
+            action_index (int): The action index to convert.
+        Returns:
+            str: The UCI string representing the move.
+        """
+        from_square, to_square, promotion = self._decode_action_index(action_index)
+        move = chess.Move(from_square, to_square, promotion=promotion)
+        return move.uci()

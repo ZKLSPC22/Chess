@@ -1,191 +1,139 @@
-from core_logic import create_agent_instance, override_agent_instance, vs_human, vs_agent_with_render, TrainingParadigms, load_instance
 import os
-import pickle
+import inquirer
+import logging
 import yaml
-import time
-import argparse
-import importlib
+from utils.config import override_config
+from utils.logger import setup_loggers
+from core_logic import DataCollectionParadigms, MixedParadigm
+from core_logic import create_agent_instance, vs_human, vs_agent_with_render, TrainingParadigms, load_instance
 
-paradigms = set('ppo_resnet')
+
+paradigms = set(['ppo_self_play'])
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="""
-Flexible Chess AI Training and Evaluation Framework.
+    # 1. Set up loggers first, using a temporary config.
+    # We will load the full config right after.
+    try:
+        with open('config.yaml', 'r') as f:
+            config = yaml.safe_load(f)
+        setup_loggers(config)
+    except FileNotFoundError:
+        # Fallback if config.yaml doesn't exist yet
+        print("ERROR: config.yaml not found. Cannot set up logging.")
+        config = {'logging': {}}
+        setup_loggers(config)
 
-This framework provides tools to train, evaluate, and play against neural network-based chess agents.
-It supports modular agent design, instance management, multiple training paradigms, and interactive play.
+    try:
+        logging.info("Application starting.")
+        
+        # Mode selection
+        mode = inquirer.prompt([
+            inquirer.List('mode', message="Select a mode", choices=['train', 'vs_human', 'vs_agent', 'create_agent'])
+        ])['mode']
+        logging.info(f"Running in '{mode}' mode.")
 
-Typical usage includes:
-    - Creating new agent instances with custom configurations (e.g. MCTS guided PPO using ResNet)
-    - Training agents using different paradigms (e.g. recursive self-play, combination of Value-Policy loss and PPO)
-    - Listing available agents, instances, and associated configurations
-    - Playing interactively against a trained model
+        # Centralized config resolution
+        agent_name = None
+        final_agent_config = None
 
-Example usage:
-    python main.py --agent ppo_resnet --create (create a new instance of the ppo_resnet agent)
-    python main.py --agent ppo_resnet --instance ppo_resnet_1 --train --paradigm mcts_guided_ppo_self_play (train the ppo_resnet_1 instance using the mcts_guided_ppo_self_play paradigm)
-    python main.py --vs-human ppo_resnet_1 (play against the trained model interactively)
-        """,
-        epilog="""
-Additional Notes:
-    - Paradigms define specific training strategies. Use --paradigm to specify one.
-    - Instances are saved under agent/<agent_name>/<instance_name>/ and contain weights, configs, etc.
-    - Playing against a model uses the latest saved weights in the specified instance directory.
-    - To modify or inspect configs, edit or view config.yaml inside the instance directory.
+        if mode != 'create_agent':
+            agent_name = select_agent()
+            
+            # Build the agent's final configuration from the central config file
+            defaults = config.get('default_configs', {})
+            agent_specifics = config.get('agent_settings', {}).get(agent_name, {})
+            final_agent_config = override_config(agent_specifics, defaults)
 
-Developed for research and experimentation with reinforcement learning in games like Chess.
-        """,
-        formatter_class=argparse.RawTextHelpFormatter
-    )
+        if mode == 'train':
+            agent_instance = load_instance(instance_dir, final_agent_config)
+            paradigm_executor = select_paradigm(agent_instance, instance_dir)
+            
+            paradigm_executor()
 
-    # --agent and --instance arguments
-    parser.add_argument('--agent', type=str, help='Name of the agent (e.g. ppo_resnet)')
-    parser.add_argument('--instance', type=str, help='Name of the instance (e.g. instance1)')
-    parser.add_argument('--opponent', type=str, help='Name of the opponent (e.g. ppo_resnet)')
-    parser.add_argument('--opponent_instance', type=str, help='Name of the opponent instance (e.g. instance1)')
+        elif mode == 'vs_human':
+            agent_instance = load_instance(instance_dir, final_agent_config)
+            vs_human(agent_instance)
+
+        elif mode == 'vs_agent':
+            print("Select Agent 1 (White):")
+            # Agent 1 config resolution is already done for `agent_name`
+            instance1_dir = select_instance(agent_name)
+            agent1_instance = load_instance(instance1_dir, final_agent_config)
+
+            print("Select Agent 2 (Black):")
+            agent2_name = select_agent()
+            
+            # Build Agent 2's config
+            defaults2 = config.get('default_configs', {})
+            agent_specifics2 = config.get('agent_settings', {}).get(agent2_name, {})
+            final_agent_config2 = override_config(agent_specifics2, defaults2)
+
+            instance2_dir = select_instance(agent2_name)
+            agent2_instance = load_instance(instance2_dir, final_agent_config2)
+
+            vs_agent_with_render(agent1_instance, agent2_instance)
+
+        elif mode == 'create_agent':
+            agent_name = select_agent()
+            # Build config for the new agent
+            defaults = config.get('default_configs', {})
+            agent_specifics = config.get('agent_settings', {}).get(agent_name, {})
+            final_agent_config = override_config(agent_specifics, defaults)
+            create_agent_instance(agent_name, final_agent_config)
+        
+        logging.info("Application finished successfully.")
+
+    except Exception as e:
+        logging.critical("An unhandled exception occurred in the main execution block.", exc_info=True)
+        raise
+
+
+def select_agent(prompt_message="Select an agent"):
+    agent_dirs = [d for d in os.listdir('agent') if os.path.isdir(os.path.join('agent', d)) and not d.startswith('__') and d != 'utils']
+    if not agent_dirs:
+        logging.warning("No agent directories found in the 'agent' folder.")
+        print("No agents found. Please create an agent directory first.")
+        exit()
+    questions = [inquirer.List('agent', message=prompt_message, choices=agent_dirs)]
+    answers = inquirer.prompt(questions)
+    logging.info(f"User selected agent: {answers['agent']}")
+    return answers['agent']
+
+def select_instance(agent_name):
+    agent_dir = os.path.join('agent', agent_name)
+    if not os.path.exists(agent_dir):
+        logging.error(f"Agent directory does not exist: {agent_dir}")
+        print(f"Error: Agent directory '{agent_name}' not found.")
+        exit()
+    instance_dirs = [d for d in os.listdir(agent_dir) if os.path.isdir(os.path.join(agent_dir, d)) and d.startswith('instance')]
     
-    # --list argument
-    parser.add_argument('--list', action='store_true', help=(
-        "If no --agent is specified, lists all agents.\n"
-        "If --agent is specified and no --instance is specified, lists all instances of the agent.\n"
-        "If --agent and --instance are both specified, list configs for the instance."))
-
-    # --play argument
-    parser.add_argument('--create', action='store_true', help='Create a new agent instance')
-    parser.add_argument('--vs-human', action='store_true', help='Play against a trained model interactively')
-    parser.add_argument('--train', action='store_true', help='Train an agent')
-    parser.add_argument('--paradigm', type=str, help='Name of the paradigm to use for training')
-    parser.add_argument('--observe', action='store_true', help='Observe models playing against each other')
-
-    args = parser.parse_args()
-
-    # --list command logic
-    if args.list:
-        if args.paradigm:
-            for p in paradigms:
-                print(f"- {p}")
-            return
-
-        if not args.agent:
-            agents = [
-                d for d in os.listdir('agent')
-                if os.path.isdir(os.path.join('agent', d))
-            ]
-            print("Available agents:")
-            for a in sorted(agents):
-                print(f"- {a}")
-            return
-        
-        agent_path = os.path.join('agent', args.agent)
-        if not os.path.isdir(agent_path):
-            print(f"Agent **{args.agent}** not found.")
-            return
-        
-        if not args.instance:
-            instances = [
-                d for d in os.listdir(agent_path)
-                if os.path.isdir(os.path.join(agent_path, d))
-            ]
-            print(f"Available instances of agent **{args.agent}**:")
-            for i in sorted(instances):
-                print(f"- {i}")
-            return
-
-        instance_path = os.path.join(agent_path, args.instance)
-        if not os.path.isdir(instance_path):
-            print(f"Instance **{args.instance}** not found.")
-            return
-        
-        config_path = os.path.join(instance_path, 'config.yaml')
-        print(f"Configuration for instance **{args.instance}**:")
-        if os.path.exists(config_path):
-            with open(config_path, 'r') as f:
-                config = yaml.safe_load(f)
-                print(yaml.dump(config, sort_keys=False))
-        else:
-            print(f"No configuration found for instance **{args.instance}**.")
-
-    # --create command logic
-    if args.create:
-        if not args.agent:
-            print("Please specify an agent to create an instance for.")
-            return
-        
-        agent_instance, agent_dir = create_agent_instance(args.agent)
-        print(f"Created new instance of agent **{args.agent}** at **{agent_dir}**.")
-        return
-
-    # --train command logic
-    if args.train:
-        if not args.agent or not args.instance or not args.paradigm:
-            print("Please specify both --agent and --instance to train an agent.")
-            return
-        
-        instance_path = os.path.join('agent', args.agent, args.instance)
-        if not os.path.isdir(instance_path):
-            print(f"Instance **{args.instance}** not found.")
-            return
+    choices = instance_dirs + ["Create new instance"]
+    questions = [inquirer.List('instance', message="Select an instance", choices=choices)]
+    answers = inquirer.prompt(questions)
     
-        with open(os.path.join(instance_path, 'instance.pkl'), 'rb') as f:
-            agent_instance = pickle.load(f)
-        
-        trainer = TrainingParadigms(args.instance)
-        paradigm = _retrieve_paradigm(args.paradigm)
+    instance_choice = answers['instance']
+    logging.info(f"User selected instance: {instance_choice}")
 
-        print(f"Running training paradigm <{args.paradigm}> for agent <{args.agent}> instance <{args.instance}>.")
-        paradigm(agent_instance)
-        print(f"Training completed.")
-        return
+    if instance_choice == "Create new instance":
+        # This path is now handled inside the 'create_agent' mode in main()
+        # We need to resolve the config before creating
+        print("Please use the 'create_agent' mode from the main menu to create a new instance.")
+        exit()
+    else:
+        return os.path.join(agent_dir, instance_choice)
 
-    # --vs-human command logic
-    if args.vs_human:
-        if not args.agent or not args.instance:
-            print("Please specify both --agent and --instance to play against a trained model.")
-            return
-        
-        instance_path = os.path.join('agent', args.agent, args.instance)
-        if not os.path.isdir(instance_path):
-            print(f"Instance **{args.instance}** not found.")
-            return
-        
-        agent_instance = load_instance(instance_path)
-        
-        print(f"Playing against trained model **{args.instance}** of agent **{args.agent}**.")
-        vs_human(agent_instance)
-        return
-
-    # --observe command logic
-    if args.observe:
-        if not args.agent or not args.instance or not args.opponent or not args.opponent_instance:
-            print("Please specify both --agent and --instance to observe models playing against each other.")
-            return
-        
-        instance_path = os.path.join('agent', args.agent, args.instance)
-        opponent_instance_path = os.path.join('agent', args.opponent, args.opponent_instance)
-        if not os.path.isdir(instance_path) or not os.path.isdir(opponent_instance_path):
-            if not os.path.isdir(instance_path):
-                print(f"Instance **{args.instance}** not found.")
-            if not os.path.isdir(opponent_instance_path):
-                print(f"Instance **{args.opponent_instance}** not found.")
-            return
-        
-        print(f"Observing models playing against each other.")
-        agent_instance = load_instance(instance_path)
-        opponent_instance = load_instance(opponent_instance_path)
-        vs_agent_with_render(agent_instance, opponent_instance)
-        return
-
-def _retrieve_paradigm(trainer, paradigm_name):
-
-    if not hasattr(trainer, paradigm_name):
-        print(f"Training paradigm <{paradigm_name}> not found.")
-        print("Available paradigms:")
-        for m in dir(trainer):
-            if not m.startswith('_') and callable(getattr(trainer, m)):
-                print(f"- {m}")
-        exit(1)
-    return getattr(trainer, paradigm_name)
+def select_paradigm(agent_instance, instance_dir):
+    training_paradigms = TrainingParadigms(agent_instance, instance_dir)
+    paradigm_names = training_paradigms.list_paradigms()
+    if not paradigm_names:
+        logging.error(f"No training paradigms found for agent: {agent_instance.__class__.__name__}")
+        print("Error: No training paradigms available for this agent.")
+        exit()
+    questions = [inquirer.List('paradigm', message="Select a training paradigm", choices=paradigm_names)]
+    answers = inquirer.prompt(questions)
+    selected_paradigm = answers['paradigm']
+    logging.info(f"User selected paradigm: {selected_paradigm}")
+    return getattr(training_paradigms, selected_paradigm)
 
 if __name__ == "__main__":
     main()

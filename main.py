@@ -90,7 +90,6 @@ def main():
         logging.critical("An unhandled exception occurred in the main execution block.", exc_info=True)
         raise
 
-
 def select_agent(prompt_message="Select an agent"):
     agent_dirs = [d for d in os.listdir('agent') if os.path.isdir(os.path.join('agent', d)) and not d.startswith('__') and d != 'utils']
     if not agent_dirs:

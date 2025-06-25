@@ -2,7 +2,7 @@ import torch
 import torch.nn.functional as F
 import math
 from torch.utils.data import DataLoader
-from env import ChessEnv
+import env
 
 
 class Node:
@@ -54,33 +54,31 @@ class MCTS:
         self.node_dict = {}
         self.root = None
                 
-    def select_action(self, state, chess_env, return_policy=False):
+    def select_action(self, state):
         if self.root is None or not torch.equal(self.root.state, state):
-            self.root, type = self.get_or_create_node(state, chess_env)
+            self.root, _ = self.get_or_create_node(state)
 
         num_sims_to_run = self.num_simulations
-
         for _ in range(num_sims_to_run):
-            self.sesb(self.root, chess_env)
+            self.sesb(self.root)
         
         if not self.root.children:
-            raise ValueError("select_action:No children found for the root node")
+            raise ValueError("select_action: No children found for the root node")
         
-        # Create policy target
-        policy_target = torch.zeros(4672, dtype=torch.float32)
-        total_visits = 0
-        for action, child in self.root.children.items():
-            policy_target[action] = child.visits
-            total_visits += child.visits
+        # Gather visit counts for all children
+        actions, visits = zip(*[(a, c.visits) for a, c in self.root.children.items()])
+        visits = torch.tensor(visits, dtype=torch.float32)
         
-        if total_visits > 0:
-            policy_target /= total_visits
-
-        best_action = max(self.root.children.items(), key=lambda x: x[1].visits)[0]
+        # Normalize to get probabilities
+        if visits.sum() > 0:
+            probs = visits / visits.sum()
+        else:
+            probs = torch.ones_like(visits) / len(visits)
         
-        if return_policy:
-            return best_action, policy_target
-        return best_action
+        # Sample an action according to the visit distribution
+        action_idx = torch.multinomial(probs, 1).item()
+        action = actions[action_idx]
+        return action
 
     def advance_tree(self, action):
         if action in self.root.children:
@@ -105,7 +103,7 @@ class MCTS:
         else:
             self.root = None
 
-    def sesb(self, root_node, chess_env):
+    def sesb(self, root_node):
         """
         Performs one simulation of the MCTS algorithm, consisting of three phases:
         1. Selection: Traverse the tree from the root by repeatedly selecting the child with the highest UCB value.
@@ -122,7 +120,7 @@ class MCTS:
             path.append(node)
         
         # Expansion and Evaluation: Once a leaf is found, expand it.
-        legal_actions = chess_env.get_legal_actions(node.state)
+        legal_actions = env.get_legal_actions(node.state)
         
         # Check if the game has ended at this node.
         if legal_actions:
@@ -138,7 +136,7 @@ class MCTS:
                 # Note: The environment step is not needed here as we have the state representation.
                 # This is a simplification assuming the state representation is sufficient.
                 # A more rigorous implementation might step the env to get the child state.
-                next_state, _, _, _, _ = chess_env.step(node.state, action)
+                next_state, _, _, _, _ = env.step(node.state, action)
                 child, _ = self.get_or_create_node(
                     next_state,
                     c_puct=self.c_puct,
@@ -152,7 +150,7 @@ class MCTS:
             reward = value.item()
         else:
             # If it's a terminal node, the reward is the actual game outcome.
-            reward = chess_env._get_reward(chess_env._state_to_board(node.state)).item()
+            reward = env._get_reward(env._state_to_board(node.state)).item()
 
         # Backpropagation: Update the statistics of the nodes in the path.
         for n in reversed(path):
@@ -175,21 +173,3 @@ class MCTS:
                 node.parent[action] = parent
             self.node_dict[state_key] = node
             return node, 'created'
-
-def train_mcts(agent, optimizer, mcts_dataset, train_config):
-    loader = DataLoader(mcts_dataset, batch_size=train_config['batch_size'], shuffle=True)
-    agent.train()
-
-    for epoch in range(train_config['epochs']):
-        for states, pi_targets, z_targets in loader:
-            policy_logits, values = agent(states)  # (B, 4672), (B, 1)
-
-            policy_loss = F.cross_entropy(policy_logits, pi_targets.argmax(dim=1))  # pi_targets: (B, 4672)
-            value_loss = F.mse_loss(values.squeeze(), z_targets)  # z_targets: (B,)
-
-            l2_penalty = sum((p**2).sum() for p in agent.parameters())
-            loss = policy_loss + train_config['value_coef'] * value_loss + train_config['weight_decay'] * l2_penalty
-
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()

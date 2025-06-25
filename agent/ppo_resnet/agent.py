@@ -1,30 +1,30 @@
 import torch
-import torch.optim as optim
 import learning.ppo as ppo
-from planning.mcts import MCTS
 import logging
-from utils.config import override_config
+
 
 logger = logging.getLogger(__name__)
+
 
 # Class name MUST match the agent name for importlib to work
 class PpoResnet:
     def __init__(self, agent_config):
-        logger.info("Initializing PpoResnet agent.")
+        logger.info(f"Initializing PpoResnet agent with config: {agent_config}")
         self.config = agent_config
         # Model config
-        model_config = self.config['model']
+        model_config = self.config['ppo']['model']
         self.model = ppo.ResNet(model_config=model_config)
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.model.to(self.device)
         logger.info(f"PpoResnet agent model moved to device: {self.device}")
-        
-        # MCTS planner
-        self.mcts = MCTS(self, self.config['mcts'])
 
-    def select_action(self, state, chess_env, return_policy=False):
-        logger.debug(f"PpoResnet selecting action for board FEN: {chess_env.board.fen()}")
+    def select_action(self, state):
+        logger.debug("PpoResnet selecting action for given state tensor.")
         self.model.eval()
-        action = self.mcts.select_action(state, chess_env, return_policy)
+        state_tensor = state.unsqueeze(0).to(self.device)
+        policy_logits, _ = self.model(state_tensor)
+        policy_logits = policy_logits.squeeze(0)
+        probs = torch.softmax(policy_logits, dim=0)
+        action = torch.multinomial(probs, 1).item()
         logger.debug(f"Agent selected action index: {action}")
         return action

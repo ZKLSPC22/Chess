@@ -159,9 +159,9 @@ def vs_human(agent_instance, human_color=None):
                     if action == 'q':
                         print('Quitting the game. Goodbye!')
                         exit()
-                    board = chess_env._state_to_board(state)
-                    action_idx = chess_env.encode_uci_to_action_index(action, board)
-                    legal_actions = chess_env.get_legal_actions(state)
+                    board = env._state_to_board(state)
+                    action_idx = env.encode_uci_to_action_index(action, board)
+                    legal_actions = env.get_legal_actions(state)
                     if action_idx not in legal_actions:
                         print(f"Invalid move: {action}")
                         time.sleep(0.3)
@@ -175,7 +175,7 @@ def vs_human(agent_instance, human_color=None):
             print(f"You played: {action}")
             time.sleep(0.5)
             eval_logger.info(f"Human played move: {action}")
-            state, _, _, _, _ = chess_env.step(state, action_idx)
+            state, _, _, _, _ = env.step(state, action_idx)
             if hasattr(agent_instance, 'mcts') and agent_instance.mcts is not None:
                 agent_instance.mcts.advance_tree(action_idx)
             
@@ -191,13 +191,13 @@ def vs_human(agent_instance, human_color=None):
             action = agent_instance.select_action(state, chess_env)
             
             # Convert action back to UCI for display
-            from_square, to_square, promotion = chess_env._decode_action_index(action)
+            from_square, to_square, promotion = env._decode_action_index(action)
             ai_move = chess.Move(from_square, to_square, promotion=promotion).uci()
             
             print(f"AI played: {ai_move}")
             eval_logger.info(f"Agent played move: {ai_move}")
             time.sleep(0.5)
-            state, _, _, _, _ = chess_env.step(state, action)
+            state, _, _, _, _ = env.step(state, action)
             if hasattr(agent_instance, 'mcts') and agent_instance.mcts is not None:
                 agent_instance.mcts.advance_tree(action)
         
@@ -285,14 +285,14 @@ def vs_agent_with_render(agent_instance1, agent_instance2):
         action = agent_to_move.select_action(state, chess_env)
         
         # Convert action back to UCI for display
-        from_square, to_square, promotion = chess_env._decode_action_index(action)
+        from_square, to_square, promotion = env._decode_action_index(action)
         ai_move = chess.Move(from_square, to_square, promotion=promotion).uci()
         
         print(f"{current_player_name} played: {ai_move}")
         eval_logger.info(f"{current_player_name} played move: {ai_move}")
         time.sleep(1.0)
         
-        state, _, _, _, _ = chess_env.step(state, action)
+        state, _, _, _, _ = env.step(state, action)
         move_count += 1
         
         if hasattr(agent_instance1, 'mcts') and agent_instance1.mcts is not None:

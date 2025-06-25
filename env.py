@@ -23,16 +23,13 @@ class ChessEnv(gym.Env):
         self.action_space = spaces.Discrete(4672)
         self.observation_space = spaces.Box(low=0, high=1, shape=(17, 8, 8), dtype=np.float32)
 
-        self.piece_type_to_idx = {
-            chess.PAWN: 0, chess.KNIGHT: 1, chess.BISHOP: 2,
-            chess.ROOK: 3, chess.QUEEN: 4, chess.KING: 5
-        }
+        self.piece_type_to_idx = _get_piece_type_to_idx()
         self.idx_to_piece_type = {v: k for k, v in self.piece_type_to_idx.items()}
 
         # Move encoding helpers based on AlphaZero
-        self.queen_move_directions = [(0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-1, 0), (-1, 1)]
-        self.knight_move_deltas = [(1, 2), (2, 1), (2, -1), (1, -2), (-1, -2), (-2, -1), (-2, 1), (-1, 2)]
-        self.underpromotion_pieces = [chess.KNIGHT, chess.BISHOP, chess.ROOK]
+        self.queen_move_directions = _get_queen_move_directions()
+        self.knight_move_deltas = _get_knight_move_deltas()
+        self.underpromotion_pieces = _get_underpromotion_pieces()
     
     def initial_state(self):
         return self._board_to_state(chess.Board())
@@ -150,231 +147,244 @@ class ChessEnv(gym.Env):
         if use_color:
             print(self._RESET_COLOR, end='')  # Ensure terminal color is reset
 
-    def get_legal_actions(self, state):
-        board = self._state_to_board(state)
-        legal_moves = [move.uci() for move in board.legal_moves]
-        legal_actions = [self.encode_uci_to_action_index(move, board) for move in legal_moves]
-        return legal_actions
+def get_legal_actions(state):
+    board = _state_to_board(state)
+    legal_moves = [move.uci() for move in board.legal_moves]
+    legal_actions = [encode_uci_to_action_index(move, board) for move in legal_moves]
+    return legal_actions
+
+def encode_uci_to_action_index(uci: str, state: torch.Tensor) -> int:
+    board = _state_to_board(state)
+    move = chess.Move.from_uci(uci)
+    from_square = move.from_square
+    to_square = move.to_square
+    promotion = move.promotion
+
+    from_file, from_rank = chess.square_file(from_square), chess.square_rank(from_square)
+    to_file, to_rank = chess.square_file(to_square), chess.square_rank(to_square)
     
-    def encode_uci_to_action_index(self, uci: str, board=None) -> int:
-        if board is None:
-            board = self.board
-        move = chess.Move.from_uci(uci)
-        from_square = move.from_square
-        to_square = move.to_square
-        promotion = move.promotion
-
-        from_file, from_rank = chess.square_file(from_square), chess.square_rank(from_square)
-        to_file, to_rank = chess.square_file(to_square), chess.square_rank(to_square)
-        
-        delta_file, delta_rank = to_file - from_file, to_rank - from_rank
-        
-        piece = board.piece_at(from_square)
-        if piece is None: return -1 # Should not happen for legal move
-        
-        move_type = -1
-        
-        # Underpromotion
-        if promotion is not None and promotion != chess.QUEEN:
-            try:
-                promo_idx = self.underpromotion_pieces.index(promotion)
-                direction_idx = delta_file + 1 # file delta -1,0,1 -> 0,1,2
-                move_type = 64 + promo_idx * 3 + direction_idx
-            except (ValueError, IndexError):
-                return -1
-        
-        # Knight move
-        elif piece.piece_type == chess.KNIGHT:
-            try:
-                knight_move_idx = self.knight_move_deltas.index((delta_file, delta_rank))
-                move_type = 56 + knight_move_idx
-            except ValueError:
-                return -1 # Should not happen
-                
-        # Queen-like move (includes normal pawn moves, king moves, and queen promotions)
-        else:
-            abs_delta_file, abs_delta_rank = abs(delta_file), abs(delta_rank)
-            
-            # Not a straight or diagonal line
-            if (delta_file != 0 and delta_rank != 0 and abs_delta_file != abs_delta_rank):
-                return -1
-            
-            distance = max(abs_delta_file, abs_delta_rank)
-            if distance == 0: return -1
-
-            norm_delta_file = delta_file // distance
-            norm_delta_rank = delta_rank // distance
-            
-            try:
-                direction_idx = self.queen_move_directions.index((norm_delta_file, norm_delta_rank))
-                move_type = direction_idx * 7 + (distance - 1)
-            except ValueError:
-                return -1
-        
-        if move_type == -1:
+    delta_file, delta_rank = to_file - from_file, to_rank - from_rank
+    
+    piece = board.piece_at(from_square)
+    if piece is None: return -1 # Should not happen for legal move
+    
+    move_type = -1
+    
+    # Underpromotion
+    if promotion is not None and promotion != chess.QUEEN:
+        try:
+            promo_idx = _get_underpromotion_pieces().index(promotion)
+            direction_idx = delta_file + 1 # file delta -1,0,1 -> 0,1,2
+            move_type = 64 + promo_idx * 3 + direction_idx
+        except (ValueError, IndexError):
             return -1
-            
-        return from_square * 73 + move_type
-
-    def _get_reward(self, board: chess.Board) -> torch.Tensor:
-        """
-        Calculates the reward based on the game's outcome.
-
-        Args:
-            board (chess.Board): The current board state.
-
-        Returns:
-            torch.Tensor: A tensor representing the reward: 1.0 for White's win, 
-                          -1.0 for Black's win, and 0.0 for a draw or ongoing game.
-        """
-        if board.is_game_over():
-            outcome = board.outcome()
-            if outcome is None: # Should not happen if game is over, but for safety
-                return torch.tensor(0.0, dtype=torch.float32)
-            if outcome.winner == chess.WHITE:
-                return torch.tensor(1.0, dtype=torch.float32)
-            elif outcome.winner == chess.BLACK:
-                return torch.tensor(-1.0, dtype=torch.float32)
-            else: # Draw
-                return torch.tensor(0.0, dtype=torch.float32)
-        # No reward for ongoing games
-        return torch.tensor(0.0, dtype=torch.float32)
-
-    def _board_to_state(self, board: chess.Board) -> torch.Tensor:
-        """
-        Converts a `chess.Board` object to a 17x8x8 tensor representation.
-
-        The state tensor is structured as follows:
-        - Planes 0-5: White pieces (Pawn, Knight, Bishop, Rook, Queen, King).
-        - Planes 6-11: Black pieces (Pawn, Knight, Bishop, Rook, Queen, King).
-        - Plane 12: White king-side castling rights.
-        - Plane 13: White queen-side castling rights.
-        - Plane 14: Black king-side castling rights.
-        - Plane 15: Black queen-side castling rights.
-        - Plane 16: Side to move (1.0 for White, 0.0 for Black).
-
-        Args:
-            board (chess.Board): The board to convert.
-
-        Returns:
-            torch.Tensor: The 17x8x8 state tensor.
-        """
-        state = torch.zeros(17, 8, 8, dtype=torch.float32)
-        
-        # Populate piece planes
-        for square, piece in board.piece_map().items():
-            row, col = divmod(square, 8)
-            plane_idx = self.piece_type_to_idx[piece.piece_type]
-            if piece.color == chess.BLACK:
-                plane_idx += 6  # Offset for black pieces
-            state[plane_idx, row, col] = 1.0
-        
-        # Populate castling rights planes
-        if board.has_kingside_castling_rights(chess.WHITE): state[12, :, :] = 1.0
-        if board.has_queenside_castling_rights(chess.WHITE): state[13, :, :] = 1.0
-        if board.has_kingside_castling_rights(chess.BLACK): state[14, :, :] = 1.0
-        if board.has_queenside_castling_rights(chess.BLACK): state[15, :, :] = 1.0
-
-        # Populate side-to-move plane
-        if board.turn == chess.WHITE: state[16, :, :] = 1.0
-
-        return state
     
-    def _state_to_board(self, state: torch.Tensor) -> chess.Board:
-        if state.shape != (17, 8, 8):
-            raise ValueError("State must be a 17x8x8 tensor")
-        
-        # Start with an empty board
-        board = chess.Board(fen=None)
-        
-        # Set pieces based on the state tensor
-        for plane_idx in range(12):
-            piece_type_idx = plane_idx % 6
-            color = chess.WHITE if plane_idx < 6 else chess.BLACK
-            piece_type = self.idx_to_piece_type[piece_type_idx]
-            piece = chess.Piece(piece_type, color)
-
-            for row in range(8):
-                for col in range(8):
-                    if state[plane_idx, row, col] == 1.0:
-                        board.set_piece_at(chess.square(col, row), piece)
-        
-        # Reconstruct castling rights from FEN string components
-        castling_fen = ""
-        if state[12, :, :].any(): castling_fen += "K"
-        if state[13, :, :].any(): castling_fen += "Q"
-        if state[14, :, :].any(): castling_fen += "k"
-        if state[15, :, :].any(): castling_fen += "q"
-        
-        # The full FEN is not needed, just the castling part
-        board.set_castling_fen(castling_fen if castling_fen else '-')
-        
-        # Set the turn
-        if state[16, :, :].any():
-            board.turn = chess.WHITE
-        else:
-            board.turn = chess.BLACK
-        
-        return board
-
-    def _decode_action_index(self, action: int, board=None):
-        if board is None:
-            board = self.board
-        from_square = action // 73
-        move_type = action % 73
-        from_file, from_rank = chess.square_file(from_square), chess.square_rank(from_square)
-
-        to_square = -1  # Invalid default
-        promotion = None
-
-        # 1. Queen-like moves (0-55)
-        if 0 <= move_type < 56:
-            direction_idx = move_type // 7
-            distance = (move_type % 7) + 1
+    # Knight move
+    elif piece.piece_type == chess.KNIGHT:
+        try:
+            knight_move_idx = _get_knight_move_deltas().index((delta_file, delta_rank))
+            move_type = 56 + knight_move_idx
+        except ValueError:
+            return -1 # Should not happen
             
-            delta_file, delta_rank = self.queen_move_directions[direction_idx]
-            to_file = from_file + delta_file * distance
-            to_rank = from_rank + delta_rank * distance
+    # Queen-like move (includes normal pawn moves, king moves, and queen promotions)
+    else:
+        abs_delta_file, abs_delta_rank = abs(delta_file), abs(delta_rank)
+        
+        # Not a straight or diagonal line
+        if (delta_file != 0 and delta_rank != 0 and abs_delta_file != abs_delta_rank):
+            return -1
+        
+        distance = max(abs_delta_file, abs_delta_rank)
+        if distance == 0: return -1
 
-            if 0 <= to_file < 8 and 0 <= to_rank < 8:
-                to_square = chess.square(to_file, to_rank)
-                piece = board.piece_at(from_square)
-                if piece and piece.piece_type == chess.PAWN:
-                    if (board.turn == chess.WHITE and from_rank == 6 and to_rank == 7) or \
-                       (board.turn == chess.BLACK and from_rank == 1 and to_rank == 0):
-                        promotion = chess.QUEEN
+        norm_delta_file = delta_file // distance
+        norm_delta_rank = delta_rank // distance
+        
+        try:
+            direction_idx = _get_queen_move_directions().index((norm_delta_file, norm_delta_rank))
+            move_type = direction_idx * 7 + (distance - 1)
+        except ValueError:
+            return -1
+    
+    if move_type == -1:
+        return -1
+        
+    return from_square * 73 + move_type
 
-        # 2. Knight moves (56-63)
-        elif 56 <= move_type < 64:
-            delta_file, delta_rank = self.knight_move_deltas[move_type - 56]
-            to_file = from_file + delta_file
-            to_rank = from_rank + delta_rank
-            if 0 <= to_file < 8 and 0 <= to_rank < 8:
-                to_square = chess.square(to_file, to_rank)
+def _get_reward(board: chess.Board) -> torch.Tensor:
+    """
+    Calculates the reward based on the game's outcome.
 
-        # 3. Underpromotions (64-72)
-        elif 64 <= move_type < 73:
-            promo_idx = (move_type - 64) // 3
-            direction_idx = (move_type - 64) % 3
-            
-            promotion = self.underpromotion_pieces[promo_idx]
-            
-            if board.turn == chess.WHITE:
-                to_rank = from_rank + 1
-                to_file = from_file + (direction_idx - 1)
-            else: # BLACK
-                to_rank = from_rank - 1
-                to_file = from_file + (direction_idx - 1)
-            
-            if 0 <= to_file < 8 and 0 <= to_rank < 8:
-                to_square = chess.square(to_file, to_rank)
+    Args:
+        board (chess.Board): The current board state.
 
-        if to_square == -1:
-            return from_square, from_square, None
+    Returns:
+        torch.Tensor: A tensor representing the reward: 1.0 for White's win, 
+                        -1.0 for Black's win, and 0.0 for a draw or ongoing game.
+    """
+    if board.is_game_over():
+        outcome = board.outcome()
+        if outcome is None: # Should not happen if game is over, but for safety
+            return torch.tensor(0.0, dtype=torch.float32)
+        if outcome.winner == chess.WHITE:
+            return torch.tensor(1.0, dtype=torch.float32)
+        elif outcome.winner == chess.BLACK:
+            return torch.tensor(-1.0, dtype=torch.float32)
+        else: # Draw
+            return torch.tensor(0.0, dtype=torch.float32)
+    # No reward for ongoing games
+    return torch.tensor(0.0, dtype=torch.float32)
 
-        return from_square, to_square, promotion
+def _board_to_state(board: chess.Board) -> torch.Tensor:
+    """
+    Converts a `chess.Board` object to a 17x8x8 tensor representation.
 
-    def action_index_to_uci(self, action_index: int, board=None) -> str:
-        from_square, to_square, promotion = self._decode_action_index(action_index, board)
-        move = chess.Move(from_square, to_square, promotion=promotion)
-        return move.uci()
+    The state tensor is structured as follows:
+    - Planes 0-5: White pieces (Pawn, Knight, Bishop, Rook, Queen, King).
+    - Planes 6-11: Black pieces (Pawn, Knight, Bishop, Rook, Queen, King).
+    - Plane 12: White king-side castling rights.
+    - Plane 13: White queen-side castling rights.
+    - Plane 14: Black king-side castling rights.
+    - Plane 15: Black queen-side castling rights.
+    - Plane 16: Side to move (1.0 for White, 0.0 for Black).
+
+    Args:
+        board (chess.Board): The board to convert.
+
+    Returns:
+        torch.Tensor: The 17x8x8 state tensor.
+    """
+    state = torch.zeros(17, 8, 8, dtype=torch.float32)
+    
+    # Populate piece planes
+    for square, piece in board.piece_map().items():
+        row, col = divmod(square, 8)
+        plane_idx = _get_piece_type_to_idx()[piece.piece_type]
+        if piece.color == chess.BLACK:
+            plane_idx += 6  # Offset for black pieces
+        state[plane_idx, row, col] = 1.0
+    
+    # Populate castling rights planes
+    if board.has_kingside_castling_rights(chess.WHITE): state[12, :, :] = 1.0
+    if board.has_queenside_castling_rights(chess.WHITE): state[13, :, :] = 1.0
+    if board.has_kingside_castling_rights(chess.BLACK): state[14, :, :] = 1.0
+    if board.has_queenside_castling_rights(chess.BLACK): state[15, :, :] = 1.0
+
+    # Populate side-to-move plane
+    if board.turn == chess.WHITE: state[16, :, :] = 1.0
+
+    return state
+
+def _state_to_board(state: torch.Tensor) -> chess.Board:
+    if state.shape != (17, 8, 8):
+        raise ValueError("State must be a 17x8x8 tensor")
+    
+    # Start with an empty board
+    board = chess.Board(fen=None)
+    
+    # Set pieces based on the state tensor
+    for plane_idx in range(12):
+        piece_type_idx = plane_idx % 6
+        color = chess.WHITE if plane_idx < 6 else chess.BLACK
+        piece_type = _get_piece_type_to_idx()[piece_type_idx]
+        piece = chess.Piece(piece_type, color)
+
+        for row in range(8):
+            for col in range(8):
+                if state[plane_idx, row, col] == 1.0:
+                    board.set_piece_at(chess.square(col, row), piece)
+    
+    # Reconstruct castling rights from FEN string components
+    castling_fen = ""
+    if state[12, :, :].any(): castling_fen += "K"
+    if state[13, :, :].any(): castling_fen += "Q"
+    if state[14, :, :].any(): castling_fen += "k"
+    if state[15, :, :].any(): castling_fen += "q"
+    
+    # The full FEN is not needed, just the castling part
+    board.set_castling_fen(castling_fen if castling_fen else '-')
+    
+    # Set the turn
+    if state[16, :, :].any():
+        board.turn = chess.WHITE
+    else:
+        board.turn = chess.BLACK
+    
+    return board
+
+def _decode_action_index(action: int, board: chess.Board):
+    from_square = action // 73
+    move_type = action % 73
+    from_file, from_rank = chess.square_file(from_square), chess.square_rank(from_square)
+
+    to_square = -1  # Invalid default
+    promotion = None
+
+    # 1. Queen-like moves (0-55)
+    if 0 <= move_type < 56:
+        direction_idx = move_type // 7
+        distance = (move_type % 7) + 1
+        
+        delta_file, delta_rank = _get_queen_move_directions()[direction_idx]
+        to_file = from_file + delta_file * distance
+        to_rank = from_rank + delta_rank * distance
+
+        if 0 <= to_file < 8 and 0 <= to_rank < 8:
+            to_square = chess.square(to_file, to_rank)
+            piece = board.piece_at(from_square)
+            if piece and piece.piece_type == chess.PAWN:
+                if (board.turn == chess.WHITE and from_rank == 6 and to_rank == 7) or \
+                    (board.turn == chess.BLACK and from_rank == 1 and to_rank == 0):
+                    promotion = chess.QUEEN
+
+    # 2. Knight moves (56-63)
+    elif 56 <= move_type < 64:
+        delta_file, delta_rank = _get_knight_move_deltas()[move_type - 56]
+        to_file = from_file + delta_file
+        to_rank = from_rank + delta_rank
+        if 0 <= to_file < 8 and 0 <= to_rank < 8:
+            to_square = chess.square(to_file, to_rank)
+
+    # 3. Underpromotions (64-72)
+    elif 64 <= move_type < 73:
+        promo_idx = (move_type - 64) // 3
+        direction_idx = (move_type - 64) % 3
+        
+        promotion = _get_underpromotion_pieces()[promo_idx]
+        
+        if board.turn == chess.WHITE:
+            to_rank = from_rank + 1
+            to_file = from_file + (direction_idx - 1)
+        else: # BLACK
+            to_rank = from_rank - 1
+            to_file = from_file + (direction_idx - 1)
+        
+        if 0 <= to_file < 8 and 0 <= to_rank < 8:
+            to_square = chess.square(to_file, to_rank)
+
+    if to_square == -1:
+        return from_square, from_square, None
+
+    return from_square, to_square, promotion
+
+def action_index_to_uci(action_index: int, board: chess.Board) -> str:
+    from_square, to_square, promotion = _decode_action_index(action_index, board)
+    move = chess.Move(from_square, to_square, promotion=promotion)
+    return move.uci()
+
+def _get_underpromotion_pieces():
+    import chess
+    return [chess.KNIGHT, chess.BISHOP, chess.ROOK]
+
+def _get_knight_move_deltas():
+    return [(1, 2), (2, 1), (2, -1), (1, -2), (-1, -2), (-2, -1), (-2, 1), (-1, 2)]
+
+def _get_queen_move_directions():
+    return [(0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-1, 0), (-1, 1)]
+
+def _get_piece_type_to_idx():
+    return {
+        chess.PAWN: 0, chess.KNIGHT: 1, chess.BISHOP: 2,
+        chess.ROOK: 3, chess.QUEEN: 4, chess.KING: 5
+    }

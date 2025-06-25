@@ -192,11 +192,11 @@ class ValuePolicyDataCollection:
                 
                 if current_player_is_white == agent_color_is_white:
                     # Agent's turn: Use MCTS to get action and policy target
-                    action, policy_target = self.agent.select_action(state, chess_env, return_policy=True)
+                    action, policy_target = self.agent.select_action(state)
                     episode_history.append({'state': state.clone(), 'policy': policy_target, 'player_is_white': current_player_is_white})
                 else:
                     # Opponent's turn
-                    action = self.opponent.select_action(state, chess_env)
+                    action = self.opponent.select_action(state)
 
                 state, _, terminated, _, _ = chess_env.step(state, action)
                 

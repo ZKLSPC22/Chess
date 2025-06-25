@@ -1,0 +1,37 @@
+2025-06-25 10:59:12 - evaluation - INFO - Starting new game: Human vs. Agent (PpoResnet)
+2025-06-25 10:59:12 - evaluation - INFO - Human is playing as WHITE
+2025-06-25 11:01:27 - evaluation - INFO - Human played move: e2e4
+2025-06-25 11:01:29 - evaluation - INFO - Agent played move: h7h6
+2025-06-25 11:15:53 - evaluation - INFO - Starting new game: Human vs. Agent (PpoResnet)
+2025-06-25 11:15:53 - evaluation - INFO - Human is playing as WHITE
+2025-06-25 11:16:01 - evaluation - INFO - Human played move: d2d4
+2025-06-25 11:16:02 - evaluation - INFO - Agent played move: h7h6
+2025-06-25 11:20:27 - evaluation - INFO - Starting new game: Human vs. Agent (PpoResnet)
+2025-06-25 11:20:27 - evaluation - INFO - Human is playing as BLACK
+2025-06-25 11:20:29 - evaluation - INFO - Agent played move: a2a4
+2025-06-25 11:35:26 - evaluation - INFO - Starting new game: Human vs. Agent (PpoResnet)
+2025-06-25 11:35:26 - evaluation - INFO - Human is playing as WHITE
+2025-06-25 11:35:36 - evaluation - INFO - Human played move: d2d4
+2025-06-25 11:35:38 - evaluation - INFO - Agent played move: h7h6
+2025-06-25 11:41:13 - evaluation - INFO - Starting new game: PpoResnet (W) vs. PpoResnet (B)
+2025-06-25 11:56:33 - evaluation - INFO - Starting new game: PpoResnet (W) vs. PpoResnet (B)
+2025-06-25 14:24:40 - evaluation - INFO - Starting new game: PpoResnet (W) vs. PpoResnet (B)
+2025-06-25 14:25:11 - evaluation - INFO - Starting new game: PpoResnet (W) vs. PpoResnet (B)
+2025-06-25 14:27:20 - evaluation - INFO - Game stopped due to reaching maximum move limit (200 moves).
+2025-06-25 14:27:21 - evaluation - INFO - Game over: Draw by other condition.
+2025-06-25 14:30:58 - evaluation - INFO - Starting new game: PpoResnet (W) vs. PpoResnet (B)
+2025-06-25 14:33:09 - evaluation - INFO - Game stopped due to reaching maximum move limit (200 moves).
+2025-06-25 14:33:10 - evaluation - INFO - Game over: Draw by other condition.
+2025-06-25 18:12:26 - evaluation - INFO - Starting new game: Human vs. Agent (MctsRandom)
+2025-06-25 18:12:26 - evaluation - INFO - Human is playing as WHITE
+2025-06-25 18:12:36 - evaluation - INFO - Human played move: a2a3
+2025-06-25 18:15:18 - evaluation - INFO - Starting new game: Human vs. Agent (MctsRandom)
+2025-06-25 18:15:18 - evaluation - INFO - Human is playing as BLACK
+2025-06-25 18:17:24 - evaluation - INFO - Starting new game: Human vs. Agent (MctsRandom)
+2025-06-25 18:17:24 - evaluation - INFO - Human is playing as BLACK
+2025-06-25 18:18:45 - evaluation - INFO - Starting new game: Human vs. Agent (MctsRandom)
+2025-06-25 18:18:45 - evaluation - INFO - Human is playing as WHITE
+2025-06-25 18:18:52 - evaluation - INFO - Human played move: a2a3
+2025-06-25 18:20:14 - evaluation - INFO - Starting new game: Human vs. Agent (MctsRandom)
+2025-06-25 18:20:14 - evaluation - INFO - Human is playing as WHITE
+2025-06-25 18:20:20 - evaluation - INFO - Human played move: a2a3

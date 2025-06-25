@@ -24,15 +24,15 @@ def override_config(new_config, base_config):
     return base_config
 
 def retrieve_instance_config(instance_dir):
-    """Retrieves the configuration for a specific agent instance."""
+    """Loads the configuration for a specific agent instance, if it exists."""
     config_path = os.path.join(instance_dir, 'config.yaml')
-    logger.debug(f"Retrieving instance config from {config_path}")
-    try:
+    if os.path.exists(config_path):
+        logger.info(f"Loading instance-specific config from {config_path}")
         with open(config_path, 'r') as f:
             return yaml.safe_load(f)
-    except FileNotFoundError:
+    else:
         logger.warning(f"Instance config file not found at {config_path}. Using agent's default config.")
-        return {}
+        return None
 
 def dump_instance_config(instance_dir, config_dict):
     """Saves the configuration for a specific agent instance."""

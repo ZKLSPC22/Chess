@@ -1,0 +1,48 @@
+2025-06-25 14:35:07 - training - INFO - Starting PPO self-play round for instance: agent\ppo_resnet\instance0
+2025-06-25 14:35:07 - training - INFO - Collecting training data...
+2025-06-25 14:35:07 - training - INFO - Starting PPO data collection. Target: 2048 transitions.
+2025-06-25 14:35:21 - training - DEBUG - Self-play game finished in 448 moves. Processing trajectory.
+2025-06-25 14:35:43 - training - DEBUG - Self-play game finished in 572 moves. Processing trajectory.
+2025-06-25 14:36:06 - training - DEBUG - Self-play game finished in 465 moves. Processing trajectory.
+2025-06-25 14:36:20 - training - DEBUG - Self-play game finished in 329 moves. Processing trajectory.
+2025-06-25 14:36:33 - training - DEBUG - Self-play game finished in 297 moves. Processing trajectory.
+2025-06-25 14:36:33 - training - INFO - PPO data collection finished. Collected 2111 transitions.
+2025-06-25 14:36:33 - training - INFO - Data collection complete. Collected 2111 transitions.
+2025-06-25 14:36:33 - training - INFO - Starting training...
+2025-06-25 14:36:36 - training - INFO - PPO trainer initialized with optimizer: adam, lr: 0.001
+2025-06-25 14:36:36 - training - INFO - Starting PPO training for 10 epochs.
+2025-06-25 14:37:16 - training - DEBUG - Epoch 1/10 | Avg Policy Loss: 0.0122 | Avg Value Loss: 0.0013
+2025-06-25 14:37:53 - training - DEBUG - Epoch 2/10 | Avg Policy Loss: 0.0121 | Avg Value Loss: 0.0000
+2025-06-25 14:38:24 - training - DEBUG - Epoch 3/10 | Avg Policy Loss: 0.0121 | Avg Value Loss: 0.0000
+2025-06-25 14:38:53 - training - DEBUG - Epoch 4/10 | Avg Policy Loss: 0.0121 | Avg Value Loss: 0.0000
+2025-06-25 14:39:28 - training - DEBUG - Epoch 5/10 | Avg Policy Loss: 0.0120 | Avg Value Loss: 0.0000
+2025-06-25 14:39:54 - training - DEBUG - Epoch 6/10 | Avg Policy Loss: 0.0120 | Avg Value Loss: 0.0000
+2025-06-25 14:40:15 - training - DEBUG - Epoch 7/10 | Avg Policy Loss: 0.0121 | Avg Value Loss: 0.0000
+2025-06-25 14:40:37 - training - DEBUG - Epoch 8/10 | Avg Policy Loss: 0.0120 | Avg Value Loss: 0.0000
+2025-06-25 14:41:08 - training - DEBUG - Epoch 9/10 | Avg Policy Loss: 0.0120 | Avg Value Loss: 0.0000
+2025-06-25 14:41:31 - training - DEBUG - Epoch 10/10 | Avg Policy Loss: 0.0120 | Avg Value Loss: 0.0000
+2025-06-25 14:41:31 - training - INFO - PPO training finished.
+2025-06-25 14:41:31 - training - INFO - Training complete.
+2025-06-25 17:59:14 - training - INFO - Starting vs-train for instance: agent\ppo_resnet\instance0
+2025-06-25 17:59:14 - training - INFO - Collecting training data...
+2025-06-25 18:01:11 - training - INFO - Starting vs-train for instance: agent\ppo_resnet\instance0
+2025-06-25 18:01:11 - training - INFO - Collecting training data...
+2025-06-25 18:03:16 - training - INFO - Starting vs-train for instance: agent\ppo_resnet\instance0
+2025-06-25 18:03:16 - training - INFO - Collecting training data...
+2025-06-25 18:03:16 - training - INFO - Starting Policy/Value data collection. Target: N/A transitions.
+2025-06-25 18:04:56 - training - INFO - Starting vs-train for instance: agent\ppo_resnet\instance0
+2025-06-25 18:04:56 - training - INFO - Collecting training data...
+2025-06-25 18:04:56 - training - INFO - Starting Policy/Value data collection. Target: 2048 transitions.
+2025-06-25 18:31:16 - training - INFO - Starting vs-train for instance: agent\ppo_resnet\instance0
+2025-06-25 18:31:16 - training - INFO - Collecting training data...
+2025-06-25 18:31:16 - training - INFO - Starting Policy/Value data collection. Target: 2048 transitions.
+2025-06-25 21:07:39 - training - INFO - Starting vs-train for instance: agent\ppo_resnet\instance0
+2025-06-25 21:07:39 - training - INFO - Collecting training data...
+2025-06-25 21:07:39 - training - INFO - Starting Policy/Value data collection. Target: 2048 transitions.
+2025-06-25 21:10:40 - training - INFO - Starting vs-train for instance: agent\ppo_resnet\instance0
+2025-06-25 21:10:40 - training - INFO - Collecting training data...
+2025-06-25 21:10:40 - training - INFO - Starting Policy/Value data collection. Target: 2048 transitions.
+2025-06-25 21:45:51 - training - INFO - Starting vs-train for instance: agent\ppo_resnet\instance0
+2025-06-25 21:47:47 - training - INFO - Starting Value-Policy (VP) training for instance: agent\ppo_resnet\instance0
+2025-06-25 21:47:47 - training - INFO - Collecting training data...
+2025-06-25 21:47:47 - training - INFO - Starting Policy/Value data collection. Target: 2048 transitions.

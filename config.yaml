@@ -22,11 +22,21 @@ default_configs:
     count: 2048
     gamma: 0.99
 
+  # Added for vs_train paradigm (used by PolicyValueDataCollection)
+  policy_value_data_collection:
+    count: 2048 # Target number of transitions to collect
+    batch_size: 64
+    num_games: 10
+    gamma: 0.99
+    # Add more fields as needed by your codebase
+
   policy_value_train:
     epochs: 5
     batch_size: 128
     value_coef: 1.0
     weight_decay: 0.0001
+    learning_rate: 0.001
+    optimizer: 'adam'
 
 # Agent-specific settings.
 # Here you can define different agents that override parts of the default configs.
@@ -37,15 +47,23 @@ agent_settings:
     # ppo:
     #   train:
     #     learning_rate: 0.0005
-    pass
+    {}
 
   mcts_ppo_pvl_resnet:
     mcts:
-      num_simulations: 25
+      num_simulations: 100
+      c_puct: 1.5
+      value_coef: 1.0
     ppo:
       train:
         # This agent uses fewer epochs for its PPO training than the default.
         epochs: 5
+
+  mcts_random:
+    mcts:
+      num_simulations: 100
+      c_puct: 1.5
+      value_coef: 1.0
 
 # Logging Configuration
 logging:

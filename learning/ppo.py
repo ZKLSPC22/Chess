@@ -28,24 +28,14 @@ training_logger = logging.getLogger('training')
 
 
 class PpoTrain:
-    def __init__(self, agent, transition_dataset):
+    def __init__(self, agent, transition_dataset, train_config, optimizer):
         self.agent = agent
-        self.config = agent.config['ppo']['train'] # Use the ppo 'train' section of the agent's config
+        self.config = train_config
         self.clip_eps = self.config['clip_eps']
         self.device = agent.device
-
+        self.optimizer = optimizer
         self.loader = DataLoader(transition_dataset, batch_size=self.config['batch_size'], shuffle=True)
-        
-        optimizer_name = self.config.get('optimizer', 'adam').lower()
-        lr = self.config.get('learning_rate', 0.001)
-        if optimizer_name == 'adam':
-            self.optimizer = optim.Adam(self.agent.model.parameters(), lr=lr)
-        elif optimizer_name == 'sgd':
-            self.optimizer = optim.SGD(self.agent.model.parameters(), lr=lr)
-        else:
-            raise ValueError(f"Unsupported optimizer: {optimizer_name}")
-        
-        training_logger.info(f"PPO trainer initialized with optimizer: {optimizer_name}, lr: {lr}")
+        training_logger.info(f"PPO trainer initialized.")
 
     def train(self):
         self.agent.model.train()
@@ -86,6 +76,7 @@ class PpoTrain:
                 f"Epoch {epoch + 1}/{self.config['epochs']} | "
                 f"Avg Policy Loss: {epoch_policy_loss / num_batches:.4f} | "
                 f"Avg Value Loss: {epoch_value_loss / num_batches:.4f}"
+                
             )
         training_logger.info("PPO training finished.")
         return self.agent

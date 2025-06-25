@@ -1,41 +1,30 @@
 import torch
 import torch.optim as optim
 import learning.ppo as ppo
-import planning.mcts as mcts
-import os
-from utils import safe_merge, override_config
-import env
+from planning.mcts import MCTS
+import logging
+from utils.config import override_config
 
-
-# New configurations are of higher priority
-agent_config = {}
-# Merge all inherited configs
-config = safe_merge(ppo.config, mcts.config)
-# Override configs
-config = override_config(config, agent_config)
+logger = logging.getLogger(__name__)
 
 # Class name MUST match the agent name for importlib to work
-class mcts_ppo_pvl_resnet:
-    def __init__(self):
-        self.model = ppo.ResNet(
-            in_channels=17,
-            channels=ppo.channels,
-            num_res_blocks=ppo.num_res_blocks,
-            activation=ppo.activation
-            )
-        self.optimizer = optim.Adam(self.model.parameters(), lr=ppo.learning_rate)
+class MctsPpoPvlResnet:
+    def __init__(self, agent_config):
+        logger.info("Initializing MctsPpoPvlResnet agent.")
+        self.config = agent_config
+        # Model config
+        model_config = self.config['model']
+        self.model = ppo.ResNet(model_config=model_config)
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.model.to(self.device)
-        self.training = set('offline', 'offpolicy', 'nn')
-        self.config = config
+        logger.info(f"MctsPpoPvlResnet agent model moved to device: {self.device}")
+        
+        # MCTS planner
+        self.mcts = MCTS(self, self.config['mcts'])
 
-    def select_action(self, state):
+    def select_action(self, state, chess_env, return_policy=False):
+        logger.debug(f"MctsPpoPvlResnet selecting action for board FEN: {chess_env.board.fen()}")
         self.model.eval()
-        with torch.no_grad():
-            policy_logits, _ = self.model(state)
-            legal_actions = env.get_legal_actions(state)
-            for i, logit in enumerate(policy_logits):
-                if i not in legal_actions:
-                    policy_logits[i] = -1e10
-            action_idx = torch.argmax(policy_logits, dim=1).item()
-            return action_idx
+        action = self.mcts.select_action(state, chess_env, return_policy)
+        logger.debug(f"Agent selected action index: {action}")
+        return action

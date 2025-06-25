@@ -62,7 +62,7 @@ class ChessEnv(gym.Env):
             raise ValueError("Action must be an integer between 0 and 4672")
 
         board = self._state_to_board(state)
-        from_square, to_square, promotion = self._decode_action_index(action)
+        from_square, to_square, promotion = self._decode_action_index(action, board)
         move = chess.Move(from_square, to_square, promotion=promotion)
         move_uci = move.uci()
         new_board = board.copy()
@@ -153,10 +153,12 @@ class ChessEnv(gym.Env):
     def get_legal_actions(self, state):
         board = self._state_to_board(state)
         legal_moves = [move.uci() for move in board.legal_moves]
-        legal_actions = [self.encode_uci_to_action_index(move) for move in legal_moves]
+        legal_actions = [self.encode_uci_to_action_index(move, board) for move in legal_moves]
         return legal_actions
     
-    def encode_uci_to_action_index(self, uci: str) -> int:
+    def encode_uci_to_action_index(self, uci: str, board=None) -> int:
+        if board is None:
+            board = self.board
         move = chess.Move.from_uci(uci)
         from_square = move.from_square
         to_square = move.to_square
@@ -167,7 +169,7 @@ class ChessEnv(gym.Env):
         
         delta_file, delta_rank = to_file - from_file, to_rank - from_rank
         
-        piece = self.board.piece_at(from_square)
+        piece = board.piece_at(from_square)
         if piece is None: return -1 # Should not happen for legal move
         
         move_type = -1
@@ -315,7 +317,9 @@ class ChessEnv(gym.Env):
         
         return board
 
-    def _decode_action_index(self, action: int):
+    def _decode_action_index(self, action: int, board=None):
+        if board is None:
+            board = self.board
         from_square = action // 73
         move_type = action % 73
         from_file, from_rank = chess.square_file(from_square), chess.square_rank(from_square)
@@ -330,14 +334,14 @@ class ChessEnv(gym.Env):
             
             delta_file, delta_rank = self.queen_move_directions[direction_idx]
             to_file = from_file + delta_file * distance
-            to_rank = from_rank + delta_rank
+            to_rank = from_rank + delta_rank * distance
 
             if 0 <= to_file < 8 and 0 <= to_rank < 8:
                 to_square = chess.square(to_file, to_rank)
-                piece = self.board.piece_at(from_square)
+                piece = board.piece_at(from_square)
                 if piece and piece.piece_type == chess.PAWN:
-                    if (self.board.turn == chess.WHITE and from_rank == 6 and to_rank == 7) or \
-                       (self.board.turn == chess.BLACK and from_rank == 1 and to_rank == 0):
+                    if (board.turn == chess.WHITE and from_rank == 6 and to_rank == 7) or \
+                       (board.turn == chess.BLACK and from_rank == 1 and to_rank == 0):
                         promotion = chess.QUEEN
 
         # 2. Knight moves (56-63)
@@ -355,7 +359,7 @@ class ChessEnv(gym.Env):
             
             promotion = self.underpromotion_pieces[promo_idx]
             
-            if self.board.turn == chess.WHITE:
+            if board.turn == chess.WHITE:
                 to_rank = from_rank + 1
                 to_file = from_file + (direction_idx - 1)
             else: # BLACK
@@ -370,14 +374,7 @@ class ChessEnv(gym.Env):
 
         return from_square, to_square, promotion
 
-    def action_index_to_uci(self, action_index: int) -> str:
-        """
-        Converts an action index to a UCI move string using the environment's encoding.
-        Args:
-            action_index (int): The action index to convert.
-        Returns:
-            str: The UCI string representing the move.
-        """
-        from_square, to_square, promotion = self._decode_action_index(action_index)
+    def action_index_to_uci(self, action_index: int, board=None) -> str:
+        from_square, to_square, promotion = self._decode_action_index(action_index, board)
         move = chess.Move(from_square, to_square, promotion=promotion)
         return move.uci()

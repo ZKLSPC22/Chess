@@ -1,0 +1,725 @@
+2025-06-25 10:55:00 - root - INFO - Logging systems configured successfully.
+2025-06-25 10:55:00 - root - INFO - Application starting.
+2025-06-25 10:55:14 - root - INFO - Running in 'vs_human' mode.
+2025-06-25 10:55:17 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 10:55:17 - root - CRITICAL - An unhandled exception occurred in the main execution block.
+Traceback (most recent call last):
+  File "D:\Coding\RL\Chess\main.py", line 44, in main
+    final_agent_config = override_config(agent_specifics, defaults)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Coding\RL\Chess\utils\config.py", line 19, in override_config
+    for key, value in new_config.items():
+                      ^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'items'
+2025-06-25 10:59:06 - root - INFO - Logging systems configured successfully.
+2025-06-25 10:59:06 - root - INFO - Application starting.
+2025-06-25 10:59:08 - root - INFO - Running in 'vs_human' mode.
+2025-06-25 10:59:10 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 10:59:12 - root - INFO - User selected instance: instance0
+2025-06-25 10:59:12 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 10:59:12 - utils.config - WARNING - Instance config file not found at agent\ppo_resnet\instance0\config.yaml. Using agent's default config.
+2025-06-25 10:59:12 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 10:59:12 - evaluation - INFO - Starting new game: Human vs. Agent (PpoResnet)
+2025-06-25 10:59:12 - evaluation - INFO - Human is playing as WHITE
+2025-06-25 11:01:27 - evaluation - INFO - Human played move: e2e4
+2025-06-25 11:01:29 - evaluation - INFO - Agent played move: h7h6
+2025-06-25 11:15:49 - root - INFO - Logging systems configured successfully.
+2025-06-25 11:15:49 - root - INFO - Application starting.
+2025-06-25 11:15:51 - root - INFO - Running in 'vs_human' mode.
+2025-06-25 11:15:52 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 11:15:53 - root - INFO - User selected instance: instance0
+2025-06-25 11:15:53 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 11:15:53 - utils.config - WARNING - Instance config file not found at agent\ppo_resnet\instance0\config.yaml. Using agent's default config.
+2025-06-25 11:15:53 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 11:15:53 - evaluation - INFO - Starting new game: Human vs. Agent (PpoResnet)
+2025-06-25 11:15:53 - evaluation - INFO - Human is playing as WHITE
+2025-06-25 11:16:01 - evaluation - INFO - Human played move: d2d4
+2025-06-25 11:16:02 - evaluation - INFO - Agent played move: h7h6
+2025-06-25 11:19:50 - root - INFO - Logging systems configured successfully.
+2025-06-25 11:19:50 - root - INFO - Application starting.
+2025-06-25 11:19:51 - root - INFO - Running in 'vs_human' mode.
+2025-06-25 11:19:52 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 11:20:27 - root - INFO - User selected instance: instance0
+2025-06-25 11:20:27 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 11:20:27 - utils.config - WARNING - Instance config file not found at agent\ppo_resnet\instance0\config.yaml. Using agent's default config.
+2025-06-25 11:20:27 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 11:20:27 - evaluation - INFO - Starting new game: Human vs. Agent (PpoResnet)
+2025-06-25 11:20:27 - evaluation - INFO - Human is playing as BLACK
+2025-06-25 11:20:29 - evaluation - INFO - Agent played move: a2a4
+2025-06-25 11:35:21 - root - INFO - Logging systems configured successfully.
+2025-06-25 11:35:21 - root - INFO - Application starting.
+2025-06-25 11:35:24 - root - INFO - Running in 'vs_human' mode.
+2025-06-25 11:35:25 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 11:35:26 - root - INFO - User selected instance: instance0
+2025-06-25 11:35:26 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 11:35:26 - utils.config - WARNING - Instance config file not found at agent\ppo_resnet\instance0\config.yaml. Using agent's default config.
+2025-06-25 11:35:26 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 11:35:26 - evaluation - INFO - Starting new game: Human vs. Agent (PpoResnet)
+2025-06-25 11:35:26 - evaluation - INFO - Human is playing as WHITE
+2025-06-25 11:35:36 - evaluation - INFO - Human played move: d2d4
+2025-06-25 11:35:38 - evaluation - INFO - Agent played move: h7h6
+2025-06-25 11:41:04 - root - INFO - Logging systems configured successfully.
+2025-06-25 11:41:04 - root - INFO - Application starting.
+2025-06-25 11:41:07 - root - INFO - Running in 'vs_agent' mode.
+2025-06-25 11:41:09 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 11:41:10 - root - INFO - User selected instance: instance0
+2025-06-25 11:41:10 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 11:41:11 - utils.config - WARNING - Instance config file not found at agent\ppo_resnet\instance0\config.yaml. Using agent's default config.
+2025-06-25 11:41:11 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 11:41:12 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 11:41:13 - root - INFO - User selected instance: instance0
+2025-06-25 11:41:13 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 11:41:13 - utils.config - WARNING - Instance config file not found at agent\ppo_resnet\instance0\config.yaml. Using agent's default config.
+2025-06-25 11:41:13 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 11:41:13 - evaluation - INFO - Starting new game: PpoResnet (W) vs. PpoResnet (B)
+2025-06-25 11:43:54 - root - INFO - Logging systems configured successfully.
+2025-06-25 11:43:54 - root - INFO - Application starting.
+2025-06-25 11:52:45 - root - INFO - Running in 'vs_agent' mode.
+2025-06-25 11:52:46 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 11:52:47 - root - INFO - User selected instance: instance0
+2025-06-25 11:52:47 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 11:52:47 - utils.config - WARNING - Instance config file not found at agent\ppo_resnet\instance0\config.yaml. Using agent's default config.
+2025-06-25 11:52:47 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 11:53:35 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 11:53:36 - root - INFO - User selected instance: instance0
+2025-06-25 11:53:36 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 11:53:36 - root - CRITICAL - An unhandled exception occurred in the main execution block.
+Traceback (most recent call last):
+  File "D:\Coding\RL\Chess\main.py", line 73, in main
+    agent2_instance = load_instance(instance2_dir, final_agent_config2)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Coding\RL\Chess\core_logic.py", line 344, in load_instance
+    agent_instance.config = override_config(instance_specific_config, agent_instance.config)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Coding\RL\Chess\utils\config.py", line 19, in override_config
+    for key, value in new_config.items():
+                      ^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'items'
+2025-06-25 11:56:27 - root - INFO - Logging systems configured successfully.
+2025-06-25 11:56:27 - root - INFO - Application starting.
+2025-06-25 11:56:29 - root - INFO - Running in 'vs_agent' mode.
+2025-06-25 11:56:30 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 11:56:30 - root - INFO - User selected instance: instance0
+2025-06-25 11:56:30 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 11:56:30 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 11:56:33 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 11:56:33 - root - INFO - User selected instance: instance0
+2025-06-25 11:56:33 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 11:56:33 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 11:56:33 - evaluation - INFO - Starting new game: PpoResnet (W) vs. PpoResnet (B)
+2025-06-25 14:24:17 - root - INFO - Logging systems configured successfully.
+2025-06-25 14:24:17 - root - INFO - Application starting.
+2025-06-25 14:24:35 - root - INFO - Running in 'vs_agent' mode.
+2025-06-25 14:24:37 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 14:24:38 - root - INFO - User selected instance: instance0
+2025-06-25 14:24:38 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 14:24:38 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 14:24:39 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 14:24:40 - root - INFO - User selected instance: instance0
+2025-06-25 14:24:40 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 14:24:40 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 14:24:40 - evaluation - INFO - Starting new game: PpoResnet (W) vs. PpoResnet (B)
+2025-06-25 14:25:05 - root - INFO - Logging systems configured successfully.
+2025-06-25 14:25:05 - root - INFO - Application starting.
+2025-06-25 14:25:07 - root - INFO - Running in 'vs_agent' mode.
+2025-06-25 14:25:08 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 14:25:09 - root - INFO - User selected instance: instance0
+2025-06-25 14:25:09 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 14:25:09 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 14:25:10 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 14:25:11 - root - INFO - User selected instance: instance0
+2025-06-25 14:25:11 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 14:25:11 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 14:25:11 - evaluation - INFO - Starting new game: PpoResnet (W) vs. PpoResnet (B)
+2025-06-25 14:27:20 - evaluation - INFO - Game stopped due to reaching maximum move limit (200 moves).
+2025-06-25 14:27:21 - evaluation - INFO - Game over: Draw by other condition.
+2025-06-25 14:27:21 - root - INFO - Application finished successfully.
+2025-06-25 14:30:46 - root - INFO - Logging systems configured successfully.
+2025-06-25 14:30:46 - root - INFO - Application starting.
+2025-06-25 14:30:53 - root - INFO - Running in 'vs_agent' mode.
+2025-06-25 14:30:55 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 14:30:55 - root - INFO - User selected instance: instance0
+2025-06-25 14:30:55 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 14:30:56 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 14:30:57 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 14:30:58 - root - INFO - User selected instance: instance0
+2025-06-25 14:30:58 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 14:30:58 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 14:30:58 - evaluation - INFO - Starting new game: PpoResnet (W) vs. PpoResnet (B)
+2025-06-25 14:33:09 - evaluation - INFO - Game stopped due to reaching maximum move limit (200 moves).
+2025-06-25 14:33:10 - evaluation - INFO - Game over: Draw by other condition.
+2025-06-25 14:33:10 - root - INFO - Application finished successfully.
+2025-06-25 14:34:53 - root - INFO - Logging systems configured successfully.
+2025-06-25 14:34:53 - root - INFO - Application starting.
+2025-06-25 14:34:57 - root - INFO - Running in 'train' mode.
+2025-06-25 14:35:00 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 14:35:01 - root - INFO - User selected instance: instance0
+2025-06-25 14:35:01 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 14:35:01 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 14:35:07 - root - INFO - User selected paradigm: ppo_self_play
+2025-06-25 14:35:07 - training - INFO - Starting PPO self-play round for instance: agent\ppo_resnet\instance0
+2025-06-25 14:35:07 - training - INFO - Collecting training data...
+2025-06-25 14:35:07 - training - INFO - Starting PPO data collection. Target: 2048 transitions.
+2025-06-25 14:35:21 - training - DEBUG - Self-play game finished in 448 moves. Processing trajectory.
+2025-06-25 14:35:43 - training - DEBUG - Self-play game finished in 572 moves. Processing trajectory.
+2025-06-25 14:36:06 - training - DEBUG - Self-play game finished in 465 moves. Processing trajectory.
+2025-06-25 14:36:20 - training - DEBUG - Self-play game finished in 329 moves. Processing trajectory.
+2025-06-25 14:36:33 - training - DEBUG - Self-play game finished in 297 moves. Processing trajectory.
+2025-06-25 14:36:33 - training - INFO - PPO data collection finished. Collected 2111 transitions.
+2025-06-25 14:36:33 - training - INFO - Data collection complete. Collected 2111 transitions.
+2025-06-25 14:36:33 - training - INFO - Starting training...
+2025-06-25 14:36:36 - training - INFO - PPO trainer initialized with optimizer: adam, lr: 0.001
+2025-06-25 14:36:36 - training - INFO - Starting PPO training for 10 epochs.
+2025-06-25 14:37:16 - training - DEBUG - Epoch 1/10 | Avg Policy Loss: 0.0122 | Avg Value Loss: 0.0013
+2025-06-25 14:37:53 - training - DEBUG - Epoch 2/10 | Avg Policy Loss: 0.0121 | Avg Value Loss: 0.0000
+2025-06-25 14:38:24 - training - DEBUG - Epoch 3/10 | Avg Policy Loss: 0.0121 | Avg Value Loss: 0.0000
+2025-06-25 14:38:53 - training - DEBUG - Epoch 4/10 | Avg Policy Loss: 0.0121 | Avg Value Loss: 0.0000
+2025-06-25 14:39:28 - training - DEBUG - Epoch 5/10 | Avg Policy Loss: 0.0120 | Avg Value Loss: 0.0000
+2025-06-25 14:39:54 - training - DEBUG - Epoch 6/10 | Avg Policy Loss: 0.0120 | Avg Value Loss: 0.0000
+2025-06-25 14:40:15 - training - DEBUG - Epoch 7/10 | Avg Policy Loss: 0.0121 | Avg Value Loss: 0.0000
+2025-06-25 14:40:37 - training - DEBUG - Epoch 8/10 | Avg Policy Loss: 0.0120 | Avg Value Loss: 0.0000
+2025-06-25 14:41:08 - training - DEBUG - Epoch 9/10 | Avg Policy Loss: 0.0120 | Avg Value Loss: 0.0000
+2025-06-25 14:41:31 - training - DEBUG - Epoch 10/10 | Avg Policy Loss: 0.0120 | Avg Value Loss: 0.0000
+2025-06-25 14:41:31 - training - INFO - PPO training finished.
+2025-06-25 14:41:31 - training - INFO - Training complete.
+2025-06-25 14:41:31 - core_logic - INFO - Overwriting agent instance at: agent\ppo_resnet\instance0
+2025-06-25 14:41:31 - core_logic - INFO - Agent instance at agent\ppo_resnet\instance0 has been overridden.
+2025-06-25 14:41:31 - root - INFO - Application finished successfully.
+2025-06-25 17:33:39 - root - INFO - Logging systems configured successfully.
+2025-06-25 17:33:39 - root - INFO - Application starting.
+2025-06-25 17:33:44 - root - INFO - Running in 'train' mode.
+2025-06-25 17:33:49 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 17:33:51 - root - INFO - User selected instance: instance0
+2025-06-25 17:33:51 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 17:33:51 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 17:33:54 - root - INFO - User selected paradigm: vs_train
+2025-06-25 17:34:17 - root - INFO - User selected agent: mcts_random
+2025-06-25 17:34:20 - root - INFO - User selected instance: Create new instance
+2025-06-25 17:37:16 - root - INFO - Logging systems configured successfully.
+2025-06-25 17:37:16 - root - INFO - Application starting.
+2025-06-25 17:37:21 - root - INFO - Running in 'train' mode.
+2025-06-25 17:37:22 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 17:37:23 - root - INFO - User selected instance: instance0
+2025-06-25 17:37:23 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 17:37:23 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 17:37:26 - root - INFO - User selected paradigm: vs_train
+2025-06-25 17:37:32 - root - INFO - User selected agent: mcts_random
+2025-06-25 17:37:33 - root - INFO - User selected instance: Create new instance
+2025-06-25 17:37:33 - core_logic - INFO - Request to create new agent instance for agent type: mcts_random
+2025-06-25 17:37:33 - agent.mcts_random.agent - INFO - Initializing MctsRandom agent.
+2025-06-25 17:37:33 - root - CRITICAL - An unhandled exception occurred in the main execution block.
+Traceback (most recent call last):
+  File "d:\Coding\RL\Chess\main.py", line 47, in main
+    paradigm_executor = select_paradigm(agent_instance, instance_dir)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\main.py", line 149, in select_paradigm
+    opponent_instance_dir = select_instance(opponent_agent_name, final_opponent_config)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\main.py", line 117, in select_instance
+    new_instance_dir = create_agent_instance(agent_name, final_agent_config)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\core_logic.py", line 318, in create_agent_instance
+    agent_class_object = create_agent_class_object(agent_name, agent_config)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\utils\misc.py", line 40, in create_agent_class_object
+    return AgentClass(agent_config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\agent\mcts_random\agent.py", line 12, in __init__
+    self.model = mcts.MCTS(uniform_random.UniformRandom(), agent_config['mcts'])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'agent.uniform_random' has no attribute 'UniformRandom'
+2025-06-25 17:39:10 - root - INFO - Logging systems configured successfully.
+2025-06-25 17:39:10 - root - INFO - Application starting.
+2025-06-25 17:39:13 - root - INFO - Running in 'train' mode.
+2025-06-25 17:39:14 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 17:39:15 - root - INFO - User selected instance: instance0
+2025-06-25 17:39:15 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 17:39:15 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 17:39:17 - root - INFO - User selected paradigm: vs_train
+2025-06-25 17:39:21 - root - INFO - User selected agent: mcts_random
+2025-06-25 17:39:22 - root - INFO - User selected instance: Create new instance
+2025-06-25 17:39:22 - core_logic - INFO - Request to create new agent instance for agent type: mcts_random
+2025-06-25 17:39:22 - agent.mcts_random.agent - INFO - Initializing MctsRandom agent.
+2025-06-25 17:39:22 - root - CRITICAL - An unhandled exception occurred in the main execution block.
+Traceback (most recent call last):
+  File "d:\Coding\RL\Chess\main.py", line 47, in main
+    paradigm_executor = select_paradigm(agent_instance, instance_dir)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\main.py", line 149, in select_paradigm
+    opponent_instance_dir = select_instance(opponent_agent_name, final_opponent_config)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\main.py", line 117, in select_instance
+    new_instance_dir = create_agent_instance(agent_name, final_agent_config)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\core_logic.py", line 318, in create_agent_instance
+    agent_class_object = create_agent_class_object(agent_name, agent_config)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\utils\misc.py", line 40, in create_agent_class_object
+    return AgentClass(agent_config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\agent\mcts_random\agent.py", line 12, in __init__
+    self.model = mcts.MCTS(UniformRandom(), agent_config['mcts'])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\planning\mcts.py", line 33, in __init__
+    self.sim_num = mcts_config['sim_num']
+                   ~~~~~~~~~~~^^^^^^^^^^^
+KeyError: 'sim_num'
+2025-06-25 17:46:24 - root - INFO - Logging systems configured successfully.
+2025-06-25 17:46:24 - root - INFO - Application starting.
+2025-06-25 17:46:27 - root - INFO - Running in 'train' mode.
+2025-06-25 17:46:28 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 17:46:29 - root - INFO - User selected instance: instance0
+2025-06-25 17:46:29 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 17:46:29 - utils.config - INFO - Loading instance-specific config from agent\ppo_resnet\instance0\config.yaml
+2025-06-25 17:46:29 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 17:46:31 - root - INFO - User selected paradigm: vs_train
+2025-06-25 17:46:32 - root - INFO - User selected agent: mcts_random
+2025-06-25 17:46:33 - root - INFO - User selected instance: Create new instance
+2025-06-25 17:46:33 - core_logic - INFO - Request to create new agent instance for agent type: mcts_random
+2025-06-25 17:46:33 - agent.mcts_random.agent - INFO - Initializing MctsRandom agent.
+2025-06-25 17:46:33 - root - CRITICAL - An unhandled exception occurred in the main execution block.
+Traceback (most recent call last):
+  File "d:\Coding\RL\Chess\main.py", line 47, in main
+    paradigm_executor = select_paradigm(agent_instance, instance_dir)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\main.py", line 149, in select_paradigm
+    opponent_instance_dir = select_instance(opponent_agent_name, final_opponent_config)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\main.py", line 117, in select_instance
+    new_instance_dir = create_agent_instance(agent_name, final_agent_config)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\core_logic.py", line 328, in create_agent_instance
+    dump_instance_config(instance_dir, agent_class_object.config)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'MctsRandom' object has no attribute 'config'
+2025-06-25 17:48:17 - root - INFO - Logging systems configured successfully.
+2025-06-25 17:48:17 - root - INFO - Application starting.
+2025-06-25 17:48:37 - root - INFO - Running in 'train' mode.
+2025-06-25 17:48:38 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 17:48:38 - root - INFO - User selected instance: instance0
+2025-06-25 17:48:38 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 17:48:38 - utils.config - INFO - Loading instance-specific config from agent\ppo_resnet\instance0\config.yaml
+2025-06-25 17:48:38 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 17:48:40 - root - INFO - User selected paradigm: vs_train
+2025-06-25 17:48:43 - root - INFO - User selected agent: mcts_random
+2025-06-25 17:48:44 - root - INFO - User selected instance: instance0
+2025-06-25 17:48:44 - core_logic - INFO - Loading agent instance from: agent\mcts_random\instance0
+2025-06-25 17:48:44 - utils.config - WARNING - Instance config file not found at agent\mcts_random\instance0\config.yaml. Using agent's default config.
+2025-06-25 17:48:44 - root - CRITICAL - An unhandled exception occurred in the main execution block.
+Traceback (most recent call last):
+  File "d:\Coding\RL\Chess\main.py", line 47, in main
+    paradigm_executor = select_paradigm(agent_instance, instance_dir)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\main.py", line 150, in select_paradigm
+    opponent_instance = load_instance(opponent_instance_dir, final_opponent_config)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\core_logic.py", line 385, in load_instance
+    agent_instance.config = override_config(instance_specific_config, agent_instance.config)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\utils\config.py", line 19, in override_config
+    for key, value in new_config.items():
+                      ^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'items'
+2025-06-25 17:54:51 - root - INFO - Logging systems configured successfully.
+2025-06-25 17:54:51 - root - INFO - Application starting.
+2025-06-25 17:54:54 - root - INFO - Running in 'train' mode.
+2025-06-25 17:55:02 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 17:55:03 - root - INFO - User selected instance: instance0
+2025-06-25 17:55:03 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 17:55:03 - utils.config - INFO - Loading instance-specific config from agent\ppo_resnet\instance0\config.yaml
+2025-06-25 17:55:03 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 17:55:06 - root - INFO - User selected paradigm: vs_train
+2025-06-25 17:55:08 - root - INFO - User selected agent: mcts_random
+2025-06-25 17:55:09 - root - INFO - User selected instance: Create new instance
+2025-06-25 17:55:09 - core_logic - INFO - Request to create new agent instance for agent type: mcts_random
+2025-06-25 17:55:09 - agent.mcts_random.agent - INFO - Initializing MctsRandom agent.
+2025-06-25 17:55:09 - core_logic - INFO - Agent 'mcts_random' instance created successfully at: agent\mcts_random\instance0
+2025-06-25 17:55:09 - core_logic - INFO - Loading agent instance from: (<agent.mcts_random.agent.MctsRandom object at 0x0000022C60B76BA0>, 'agent\\mcts_random\\instance0')
+2025-06-25 17:55:09 - root - CRITICAL - An unhandled exception occurred in the main execution block.
+Traceback (most recent call last):
+  File "d:\Coding\RL\Chess\main.py", line 47, in main
+    paradigm_executor = select_paradigm(agent_instance, instance_dir)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\main.py", line 150, in select_paradigm
+    opponent_instance = load_instance(opponent_instance_dir, final_opponent_config)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\core_logic.py", line 360, in load_instance
+    instance_path = os.path.join(instance_dir, 'instance.pkl')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen ntpath>", line 108, in join
+TypeError: expected str, bytes or os.PathLike object, not tuple
+2025-06-25 17:58:57 - root - INFO - Logging systems configured successfully.
+2025-06-25 17:58:57 - root - INFO - Application starting.
+2025-06-25 17:59:02 - root - INFO - Running in 'train' mode.
+2025-06-25 17:59:04 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 17:59:05 - root - INFO - User selected instance: instance0
+2025-06-25 17:59:05 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 17:59:05 - utils.config - INFO - Loading instance-specific config from agent\ppo_resnet\instance0\config.yaml
+2025-06-25 17:59:05 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 17:59:11 - root - INFO - User selected paradigm: vs_train
+2025-06-25 17:59:13 - root - INFO - User selected agent: mcts_random
+2025-06-25 17:59:14 - root - INFO - User selected instance: instance0
+2025-06-25 17:59:14 - core_logic - INFO - Loading agent instance from: agent\mcts_random\instance0
+2025-06-25 17:59:14 - utils.config - INFO - Loading instance-specific config from agent\mcts_random\instance0\config.yaml
+2025-06-25 17:59:14 - core_logic - INFO - Agent instance from agent\mcts_random\instance0 loaded and configured successfully.
+2025-06-25 17:59:14 - training - INFO - Starting vs-train for instance: agent\ppo_resnet\instance0
+2025-06-25 17:59:14 - training - INFO - Collecting training data...
+2025-06-25 17:59:14 - root - CRITICAL - An unhandled exception occurred in the main execution block.
+Traceback (most recent call last):
+  File "d:\Coding\RL\Chess\main.py", line 50, in main
+    paradigm_executor()
+  File "d:\Coding\RL\Chess\core_logic.py", line 81, in vs_train
+    self.agent_instance.config['policy_value_data_collection']
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'policy_value_data_collection'
+2025-06-25 18:01:01 - root - INFO - Logging systems configured successfully.
+2025-06-25 18:01:01 - root - INFO - Application starting.
+2025-06-25 18:01:04 - root - INFO - Running in 'train' mode.
+2025-06-25 18:01:07 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 18:01:07 - root - INFO - User selected instance: instance0
+2025-06-25 18:01:07 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 18:01:07 - utils.config - INFO - Loading instance-specific config from agent\ppo_resnet\instance0\config.yaml
+2025-06-25 18:01:07 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 18:01:08 - root - INFO - User selected paradigm: vs_train
+2025-06-25 18:01:10 - root - INFO - User selected agent: mcts_random
+2025-06-25 18:01:11 - root - INFO - User selected instance: instance0
+2025-06-25 18:01:11 - core_logic - INFO - Loading agent instance from: agent\mcts_random\instance0
+2025-06-25 18:01:11 - utils.config - INFO - Loading instance-specific config from agent\mcts_random\instance0\config.yaml
+2025-06-25 18:01:11 - core_logic - INFO - Agent instance from agent\mcts_random\instance0 loaded and configured successfully.
+2025-06-25 18:01:11 - training - INFO - Starting vs-train for instance: agent\ppo_resnet\instance0
+2025-06-25 18:01:11 - training - INFO - Collecting training data...
+2025-06-25 18:01:11 - root - CRITICAL - An unhandled exception occurred in the main execution block.
+Traceback (most recent call last):
+  File "d:\Coding\RL\Chess\main.py", line 50, in main
+    paradigm_executor()
+  File "d:\Coding\RL\Chess\core_logic.py", line 81, in vs_train
+    self.agent_instance.config['policy_value_data_collection']
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'policy_value_data_collection'
+2025-06-25 18:03:08 - root - INFO - Logging systems configured successfully.
+2025-06-25 18:03:08 - root - INFO - Application starting.
+2025-06-25 18:03:10 - root - INFO - Running in 'train' mode.
+2025-06-25 18:03:12 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 18:03:12 - root - INFO - User selected instance: instance0
+2025-06-25 18:03:12 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 18:03:12 - utils.config - INFO - Loading instance-specific config from agent\ppo_resnet\instance0\config.yaml
+2025-06-25 18:03:12 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 18:03:14 - root - INFO - User selected paradigm: vs_train
+2025-06-25 18:03:15 - root - INFO - User selected agent: mcts_random
+2025-06-25 18:03:16 - root - INFO - User selected instance: Create new instance
+2025-06-25 18:03:16 - core_logic - INFO - Request to create new agent instance for agent type: mcts_random
+2025-06-25 18:03:16 - agent.mcts_random.agent - INFO - Initializing MctsRandom agent.
+2025-06-25 18:03:16 - core_logic - INFO - Agent 'mcts_random' instance created successfully at: agent\mcts_random\instance0
+2025-06-25 18:03:16 - training - INFO - Starting vs-train for instance: agent\ppo_resnet\instance0
+2025-06-25 18:03:16 - training - INFO - Collecting training data...
+2025-06-25 18:03:16 - training - INFO - Starting Policy/Value data collection. Target: N/A transitions.
+2025-06-25 18:03:16 - root - CRITICAL - An unhandled exception occurred in the main execution block.
+Traceback (most recent call last):
+  File "d:\Coding\RL\Chess\main.py", line 50, in main
+    paradigm_executor()
+  File "d:\Coding\RL\Chess\core_logic.py", line 84, in vs_train
+    collected_data = data_collector.collect()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\training_data_collection.py", line 166, in collect
+    while len(self.data_set) < self.config['count']:
+                               ~~~~~~~~~~~^^^^^^^^^
+KeyError: 'count'
+2025-06-25 18:04:48 - root - INFO - Logging systems configured successfully.
+2025-06-25 18:04:48 - root - INFO - Application starting.
+2025-06-25 18:04:51 - root - INFO - Running in 'train' mode.
+2025-06-25 18:04:52 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 18:04:53 - root - INFO - User selected instance: instance0
+2025-06-25 18:04:53 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 18:04:53 - utils.config - INFO - Loading instance-specific config from agent\ppo_resnet\instance0\config.yaml
+2025-06-25 18:04:53 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 18:04:54 - root - INFO - User selected paradigm: vs_train
+2025-06-25 18:04:55 - root - INFO - User selected agent: mcts_random
+2025-06-25 18:04:56 - root - INFO - User selected instance: Create new instance
+2025-06-25 18:04:56 - core_logic - INFO - Request to create new agent instance for agent type: mcts_random
+2025-06-25 18:04:56 - agent.mcts_random.agent - INFO - Initializing MctsRandom agent.
+2025-06-25 18:04:56 - core_logic - INFO - Agent 'mcts_random' instance created successfully at: agent\mcts_random\instance0
+2025-06-25 18:04:56 - training - INFO - Starting vs-train for instance: agent\ppo_resnet\instance0
+2025-06-25 18:04:56 - training - INFO - Collecting training data...
+2025-06-25 18:04:56 - training - INFO - Starting Policy/Value data collection. Target: 2048 transitions.
+2025-06-25 18:04:56 - root - CRITICAL - An unhandled exception occurred in the main execution block.
+Traceback (most recent call last):
+  File "d:\Coding\RL\Chess\main.py", line 50, in main
+    paradigm_executor()
+  File "d:\Coding\RL\Chess\core_logic.py", line 84, in vs_train
+    collected_data = data_collector.collect()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\training_data_collection.py", line 185, in collect
+    action = self.opponent.select_action(state, chess_env)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\agent\mcts_random\agent.py", line 16, in select_action
+    return self.model.select_action(state)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\planning\mcts.py", line 40, in select_action
+    root_node, type = self.get_or_create_node(state)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\planning\mcts.py", line 102, in get_or_create_node
+    node = Node(state.clone(), c_puct=self.c_puct)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\planning\mcts.py", line 16, in __init__
+    self.untried_actions = ChessEnv.get_legal_actions(state)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ChessEnv.get_legal_actions() missing 1 required positional argument: 'state'
+2025-06-25 18:12:20 - root - INFO - Logging systems configured successfully.
+2025-06-25 18:12:20 - root - INFO - Application starting.
+2025-06-25 18:12:24 - root - INFO - Running in 'vs_human' mode.
+2025-06-25 18:12:26 - root - INFO - User selected agent: mcts_random
+2025-06-25 18:12:26 - root - INFO - User selected instance: instance0
+2025-06-25 18:12:26 - core_logic - INFO - Loading agent instance from: agent\mcts_random\instance0
+2025-06-25 18:12:26 - utils.config - INFO - Loading instance-specific config from agent\mcts_random\instance0\config.yaml
+2025-06-25 18:12:26 - core_logic - INFO - Agent instance from agent\mcts_random\instance0 loaded and configured successfully.
+2025-06-25 18:12:26 - evaluation - INFO - Starting new game: Human vs. Agent (MctsRandom)
+2025-06-25 18:12:26 - evaluation - INFO - Human is playing as WHITE
+2025-06-25 18:12:36 - evaluation - INFO - Human played move: a2a3
+2025-06-25 18:12:37 - root - CRITICAL - An unhandled exception occurred in the main execution block.
+Traceback (most recent call last):
+  File "d:\Coding\RL\Chess\main.py", line 56, in main
+    vs_human(agent_instance)
+  File "d:\Coding\RL\Chess\core_logic.py", line 184, in vs_human
+    action = agent_instance.select_action(state, chess_env)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\agent\mcts_random\agent.py", line 16, in select_action
+    return self.model.select_action(state)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\planning\mcts.py", line 47, in select_action
+    self.sesb(root_node)
+  File "d:\Coding\RL\Chess\planning\mcts.py", line 74, in sesb
+    while node.is_fully_expanded() and node.children:
+          ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Node' object has no attribute 'is_fully_expanded'. Did you mean: 'if_fully_expanded'?
+2025-06-25 18:15:10 - root - INFO - Logging systems configured successfully.
+2025-06-25 18:15:10 - root - INFO - Application starting.
+2025-06-25 18:15:15 - root - INFO - Running in 'vs_human' mode.
+2025-06-25 18:15:17 - root - INFO - User selected agent: mcts_random
+2025-06-25 18:15:18 - root - INFO - User selected instance: instance0
+2025-06-25 18:15:18 - core_logic - INFO - Loading agent instance from: agent\mcts_random\instance0
+2025-06-25 18:15:18 - utils.config - INFO - Loading instance-specific config from agent\mcts_random\instance0\config.yaml
+2025-06-25 18:15:18 - core_logic - INFO - Agent instance from agent\mcts_random\instance0 loaded and configured successfully.
+2025-06-25 18:15:18 - evaluation - INFO - Starting new game: Human vs. Agent (MctsRandom)
+2025-06-25 18:15:18 - evaluation - INFO - Human is playing as BLACK
+2025-06-25 18:15:20 - root - CRITICAL - An unhandled exception occurred in the main execution block.
+Traceback (most recent call last):
+  File "d:\Coding\RL\Chess\main.py", line 56, in main
+    vs_human(agent_instance)
+  File "d:\Coding\RL\Chess\core_logic.py", line 184, in vs_human
+    action = agent_instance.select_action(state, chess_env)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\agent\mcts_random\agent.py", line 16, in select_action
+    return self.model.select_action(state)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\planning\mcts.py", line 44, in select_action
+    self.sesb(root_node)
+  File "d:\Coding\RL\Chess\planning\mcts.py", line 71, in sesb
+    while not node.untried_actions() and node.children:
+              ^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'list' object is not callable
+2025-06-25 18:17:18 - root - INFO - Logging systems configured successfully.
+2025-06-25 18:17:18 - root - INFO - Application starting.
+2025-06-25 18:17:21 - root - INFO - Running in 'vs_human' mode.
+2025-06-25 18:17:23 - root - INFO - User selected agent: mcts_random
+2025-06-25 18:17:24 - root - INFO - User selected instance: instance0
+2025-06-25 18:17:24 - core_logic - INFO - Loading agent instance from: agent\mcts_random\instance0
+2025-06-25 18:17:24 - utils.config - INFO - Loading instance-specific config from agent\mcts_random\instance0\config.yaml
+2025-06-25 18:17:24 - core_logic - INFO - Agent instance from agent\mcts_random\instance0 loaded and configured successfully.
+2025-06-25 18:17:24 - evaluation - INFO - Starting new game: Human vs. Agent (MctsRandom)
+2025-06-25 18:17:24 - evaluation - INFO - Human is playing as BLACK
+2025-06-25 18:17:26 - root - CRITICAL - An unhandled exception occurred in the main execution block.
+Traceback (most recent call last):
+  File "d:\Coding\RL\Chess\main.py", line 56, in main
+    vs_human(agent_instance)
+  File "d:\Coding\RL\Chess\core_logic.py", line 184, in vs_human
+    action = agent_instance.select_action(state, chess_env)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\agent\mcts_random\agent.py", line 16, in select_action
+    return self.model.select_action(state)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\planning\mcts.py", line 44, in select_action
+    self.sesb(root_node)
+  File "d:\Coding\RL\Chess\planning\mcts.py", line 71, in sesb
+    while len(node.untried_actions()) == 0 and node.children:
+              ^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'list' object is not callable
+2025-06-25 18:18:38 - root - INFO - Logging systems configured successfully.
+2025-06-25 18:18:38 - root - INFO - Application starting.
+2025-06-25 18:18:43 - root - INFO - Running in 'vs_human' mode.
+2025-06-25 18:18:44 - root - INFO - User selected agent: mcts_random
+2025-06-25 18:18:45 - root - INFO - User selected instance: instance0
+2025-06-25 18:18:45 - core_logic - INFO - Loading agent instance from: agent\mcts_random\instance0
+2025-06-25 18:18:45 - utils.config - INFO - Loading instance-specific config from agent\mcts_random\instance0\config.yaml
+2025-06-25 18:18:45 - core_logic - INFO - Agent instance from agent\mcts_random\instance0 loaded and configured successfully.
+2025-06-25 18:18:45 - evaluation - INFO - Starting new game: Human vs. Agent (MctsRandom)
+2025-06-25 18:18:45 - evaluation - INFO - Human is playing as WHITE
+2025-06-25 18:18:52 - evaluation - INFO - Human played move: a2a3
+2025-06-25 18:18:53 - root - CRITICAL - An unhandled exception occurred in the main execution block.
+Traceback (most recent call last):
+  File "d:\Coding\RL\Chess\main.py", line 56, in main
+    vs_human(agent_instance)
+  File "d:\Coding\RL\Chess\core_logic.py", line 184, in vs_human
+    action = agent_instance.select_action(state, chess_env)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\agent\mcts_random\agent.py", line 16, in select_action
+    return self.model.select_action(state)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\planning\mcts.py", line 44, in select_action
+    self.sesb(root_node)
+  File "d:\Coding\RL\Chess\planning\mcts.py", line 85, in sesb
+    reward = self.simulate_with_agent(node.state, self.agent)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\planning\mcts.py", line 115, in simulate_with_agent
+    legal_actions = ChessEnv.get_legal_actions(state)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ChessEnv.get_legal_actions() missing 1 required positional argument: 'state'
+2025-06-25 18:20:08 - root - INFO - Logging systems configured successfully.
+2025-06-25 18:20:08 - root - INFO - Application starting.
+2025-06-25 18:20:12 - root - INFO - Running in 'vs_human' mode.
+2025-06-25 18:20:13 - root - INFO - User selected agent: mcts_random
+2025-06-25 18:20:14 - root - INFO - User selected instance: instance0
+2025-06-25 18:20:14 - core_logic - INFO - Loading agent instance from: agent\mcts_random\instance0
+2025-06-25 18:20:14 - utils.config - INFO - Loading instance-specific config from agent\mcts_random\instance0\config.yaml
+2025-06-25 18:20:14 - core_logic - INFO - Agent instance from agent\mcts_random\instance0 loaded and configured successfully.
+2025-06-25 18:20:14 - evaluation - INFO - Starting new game: Human vs. Agent (MctsRandom)
+2025-06-25 18:20:14 - evaluation - INFO - Human is playing as WHITE
+2025-06-25 18:20:20 - evaluation - INFO - Human played move: a2a3
+2025-06-25 18:20:22 - root - CRITICAL - An unhandled exception occurred in the main execution block.
+Traceback (most recent call last):
+  File "d:\Coding\RL\Chess\main.py", line 56, in main
+    vs_human(agent_instance)
+  File "d:\Coding\RL\Chess\core_logic.py", line 184, in vs_human
+    action = agent_instance.select_action(state, chess_env)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\agent\mcts_random\agent.py", line 16, in select_action
+    return self.model.select_action(state)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\planning\mcts.py", line 44, in select_action
+    self.sesb(root_node)
+  File "d:\Coding\RL\Chess\planning\mcts.py", line 85, in sesb
+    reward = self.simulate_with_agent(node.state, self.agent)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\planning\mcts.py", line 119, in simulate_with_agent
+    policy_logits = agent(state.unsqueeze(0))[0].squeeze(0)  # Get logits for this state
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'UniformRandom' object is not callable
+2025-06-25 18:30:49 - root - INFO - Logging systems configured successfully.
+2025-06-25 18:30:49 - root - INFO - Application starting.
+2025-06-25 18:30:54 - root - INFO - Running in 'train' mode.
+2025-06-25 18:30:56 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 18:30:58 - root - INFO - User selected instance: instance0
+2025-06-25 18:30:58 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 18:30:58 - utils.config - INFO - Loading instance-specific config from agent\ppo_resnet\instance0\config.yaml
+2025-06-25 18:30:58 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 18:30:59 - root - INFO - User selected paradigm: vs_train
+2025-06-25 18:31:13 - root - INFO - User selected agent: mcts_random
+2025-06-25 18:31:16 - root - INFO - User selected instance: instance0
+2025-06-25 18:31:16 - core_logic - INFO - Loading agent instance from: agent\mcts_random\instance0
+2025-06-25 18:31:16 - utils.config - INFO - Loading instance-specific config from agent\mcts_random\instance0\config.yaml
+2025-06-25 18:31:16 - core_logic - INFO - Agent instance from agent\mcts_random\instance0 loaded and configured successfully.
+2025-06-25 18:31:16 - training - INFO - Starting vs-train for instance: agent\ppo_resnet\instance0
+2025-06-25 18:31:16 - training - INFO - Collecting training data...
+2025-06-25 18:31:16 - training - INFO - Starting Policy/Value data collection. Target: 2048 transitions.
+2025-06-25 21:07:12 - root - INFO - Logging systems configured successfully.
+2025-06-25 21:07:12 - root - INFO - Application starting.
+2025-06-25 21:07:16 - root - INFO - Running in 'train' mode.
+2025-06-25 21:07:17 - root - INFO - User selected agent: latent_dynamics_mcts
+2025-06-25 21:07:24 - root - INFO - Logging systems configured successfully.
+2025-06-25 21:07:24 - root - INFO - Application starting.
+2025-06-25 21:07:26 - root - INFO - Running in 'train' mode.
+2025-06-25 21:07:28 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 21:07:29 - root - INFO - User selected instance: instance0
+2025-06-25 21:07:29 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 21:07:29 - utils.config - INFO - Loading instance-specific config from agent\ppo_resnet\instance0\config.yaml
+2025-06-25 21:07:29 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 21:07:30 - root - INFO - User selected paradigm: vs_train
+2025-06-25 21:07:38 - root - INFO - User selected agent: mcts_random
+2025-06-25 21:07:39 - root - INFO - User selected instance: instance0
+2025-06-25 21:07:39 - core_logic - INFO - Loading agent instance from: agent\mcts_random\instance0
+2025-06-25 21:07:39 - utils.config - INFO - Loading instance-specific config from agent\mcts_random\instance0\config.yaml
+2025-06-25 21:07:39 - core_logic - INFO - Agent instance from agent\mcts_random\instance0 loaded and configured successfully.
+2025-06-25 21:07:39 - training - INFO - Starting vs-train for instance: agent\ppo_resnet\instance0
+2025-06-25 21:07:39 - training - INFO - Collecting training data...
+2025-06-25 21:07:39 - training - INFO - Starting Policy/Value data collection. Target: 2048 transitions.
+2025-06-25 21:07:39 - root - CRITICAL - An unhandled exception occurred in the main execution block.
+Traceback (most recent call last):
+  File "d:\Coding\RL\Chess\main.py", line 50, in main
+    paradigm_executor()
+  File "d:\Coding\RL\Chess\core_logic.py", line 84, in vs_train
+    collected_data = data_collector.collect()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\training_data_collection.py", line 185, in collect
+    action = self.opponent.select_action(state, chess_env)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\agent\mcts_random\agent.py", line 16, in select_action
+    return self.model.select_action(state, chess_env, return_policy=return_policy)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: MCTS.select_action() got multiple values for argument 'return_policy'
+2025-06-25 21:10:08 - root - INFO - Logging systems configured successfully.
+2025-06-25 21:10:08 - root - INFO - Application starting.
+2025-06-25 21:10:15 - root - INFO - Running in 'train' mode.
+2025-06-25 21:10:24 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 21:10:34 - root - INFO - User selected instance: instance0
+2025-06-25 21:10:34 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 21:10:34 - utils.config - INFO - Loading instance-specific config from agent\ppo_resnet\instance0\config.yaml
+2025-06-25 21:10:34 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 21:10:37 - root - INFO - User selected paradigm: vs_train
+2025-06-25 21:10:39 - root - INFO - User selected agent: mcts_random
+2025-06-25 21:10:40 - root - INFO - User selected instance: instance0
+2025-06-25 21:10:40 - core_logic - INFO - Loading agent instance from: agent\mcts_random\instance0
+2025-06-25 21:10:40 - utils.config - INFO - Loading instance-specific config from agent\mcts_random\instance0\config.yaml
+2025-06-25 21:10:40 - core_logic - INFO - Agent instance from agent\mcts_random\instance0 loaded and configured successfully.
+2025-06-25 21:10:40 - training - INFO - Starting vs-train for instance: agent\ppo_resnet\instance0
+2025-06-25 21:10:40 - training - INFO - Collecting training data...
+2025-06-25 21:10:40 - training - INFO - Starting Policy/Value data collection. Target: 2048 transitions.
+2025-06-25 21:45:43 - root - INFO - Logging systems configured successfully.
+2025-06-25 21:45:43 - root - INFO - Application starting.
+2025-06-25 21:45:47 - root - INFO - Running in 'train' mode.
+2025-06-25 21:45:48 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 21:45:49 - root - INFO - User selected instance: instance0
+2025-06-25 21:45:49 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 21:45:49 - utils.config - INFO - Loading instance-specific config from agent\ppo_resnet\instance0\config.yaml
+2025-06-25 21:45:49 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 21:45:51 - root - INFO - User selected paradigm: vp_train
+2025-06-25 21:45:51 - training - INFO - Starting vs-train for instance: agent\ppo_resnet\instance0
+2025-06-25 21:45:51 - root - CRITICAL - An unhandled exception occurred in the main execution block.
+Traceback (most recent call last):
+  File "d:\Coding\RL\Chess\main.py", line 50, in main
+    paradigm_executor()
+  File "d:\Coding\RL\Chess\core_logic.py", line 76, in vp_train
+    raise ValueError("opponent_instance and opponent_instance_dir must be provided")
+ValueError: opponent_instance and opponent_instance_dir must be provided
+2025-06-25 21:47:39 - root - INFO - Logging systems configured successfully.
+2025-06-25 21:47:39 - root - INFO - Application starting.
+2025-06-25 21:47:42 - root - INFO - Running in 'train' mode.
+2025-06-25 21:47:43 - root - INFO - User selected agent: ppo_resnet
+2025-06-25 21:47:44 - root - INFO - User selected instance: instance0
+2025-06-25 21:47:44 - core_logic - INFO - Loading agent instance from: agent\ppo_resnet\instance0
+2025-06-25 21:47:44 - utils.config - INFO - Loading instance-specific config from agent\ppo_resnet\instance0\config.yaml
+2025-06-25 21:47:44 - core_logic - INFO - Agent instance from agent\ppo_resnet\instance0 loaded and configured successfully.
+2025-06-25 21:47:45 - root - INFO - User selected paradigm: vp_train
+2025-06-25 21:47:46 - root - INFO - User selected agent: mcts_random
+2025-06-25 21:47:47 - root - INFO - User selected instance: instance0
+2025-06-25 21:47:47 - core_logic - INFO - Loading agent instance from: agent\mcts_random\instance0
+2025-06-25 21:47:47 - utils.config - INFO - Loading instance-specific config from agent\mcts_random\instance0\config.yaml
+2025-06-25 21:47:47 - core_logic - INFO - Agent instance from agent\mcts_random\instance0 loaded and configured successfully.
+2025-06-25 21:47:47 - training - INFO - Starting Value-Policy (VP) training for instance: agent\ppo_resnet\instance0
+2025-06-25 21:47:47 - training - INFO - Collecting training data...
+2025-06-25 21:47:47 - training - INFO - Starting Policy/Value data collection. Target: 2048 transitions.
+2025-06-25 21:47:47 - root - CRITICAL - An unhandled exception occurred in the main execution block.
+Traceback (most recent call last):
+  File "d:\Coding\RL\Chess\main.py", line 50, in main
+    paradigm_executor()
+  File "d:\Coding\RL\Chess\core_logic.py", line 85, in vp_train
+    collected_data = data_collector.collect()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\training_data_collection.py", line 199, in collect
+    action = self.opponent.select_action(state, chess_env)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\agent\mcts_random\agent.py", line 16, in select_action
+    return self.model.select_action(state, chess_env, return_policy=return_policy)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Coding\RL\Chess\planning\mcts.py", line 58, in select_action
+    if self.root is None or not torch.equal(self.root.state, state):
+       ^^^^^^^^^
+AttributeError: 'MCTS' object has no attribute 'root'

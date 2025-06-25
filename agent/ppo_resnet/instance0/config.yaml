@@ -1,0 +1,21 @@
+policy_value_train:
+  batch_size: 256
+  epochs: 10
+  value_coef: 1.0
+  weight_decay: 0.00005
+ppo:
+  model:
+    activation: relu
+    channels: 128
+    num_res_blocks: 10
+  train:
+    batch_size: 128
+    clip_eps: 0.1
+    entropy_coef: 0.005
+    epochs: 5
+    learning_rate: 0.0003
+    optimizer: adam
+    value_coef: 1.0
+ppo_data_collection:
+  count: 4096
+  gamma: 0.995

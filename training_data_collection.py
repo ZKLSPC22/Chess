@@ -4,6 +4,8 @@ import torch.nn.functional as F
 import logging
 from env import ChessEnv
 from torch.utils.data import DataLoader
+from planning.mcts import MCTS
+import torch.optim as optim
 
 
 training_logger = logging.getLogger('training')
@@ -19,12 +21,12 @@ class PpoTrain:
         self.loader = DataLoader(transition_dataset, batch_size=self.config['batch_size'], shuffle=True)
         self.agent_output = ('policy_logits', 'value')
         self.data_set_format = ('state', 'action', 'old_log_prob', 'return', 'advantage')
-        self.restrictions = set('offline', 'offpolicy', 'nn')
+        self.restrictions = {'offline', 'offpolicy', 'nn'}
 
     def train(self):
         for epoch in range(self.config['epochs']):
             for states, actions, old_log_probs, returns, advantages in self.loader:
-                policy_logits, values = self.agent(states)
+                policy_logits, values = self.agent.model(states)
             # Apply softmax to policy logits to get probabilities
             dist = torch.distributions.Categorical(logits=policy_logits)
             # Recalculate log probabilities to normalize the policy
@@ -32,7 +34,7 @@ class PpoTrain:
 
             # PPO clipped surrogate objective
             ratio = torch.exp(new_log_probs - old_log_probs)
-            clip_adv = torch.clamp(ratio, 1 - self.clip_eps, 1 + self.clip_eps) * advantages
+            clip_adv = torch.clamp(ratio, 1 - self.config['clip_eps'], 1 + self.config['clip_eps']) * advantages
             policy_loss = -torch.min(ratio * advantages, clip_adv).mean()
 
             value_loss = F.mse_loss(values.squeeze(), returns)
@@ -60,6 +62,11 @@ class PpoDataCollection:
         chess_env = ChessEnv()
         
         while len(self.data_set) < self.config['count']:
+            if hasattr(self.new_agent, 'mcts') and self.new_agent.mcts is not None:
+                self.new_agent.mcts.reset()
+            if hasattr(self.old_agent, 'mcts') and self.old_agent.mcts is not None:
+                self.old_agent.mcts.reset()
+
             episodes = []
             state = chess_env.initial_state()
             terminated = False
@@ -86,6 +93,11 @@ class PpoDataCollection:
                 
                 next_state, reward, terminated, truncated, info = chess_env.step(state, action)
                 
+                if hasattr(self.new_agent, 'mcts') and self.new_agent.mcts is not None:
+                    self.new_agent.mcts.advance_tree(action)
+                if hasattr(self.old_agent, 'mcts') and self.old_agent.mcts is not None:
+                    self.old_agent.mcts.advance_tree(action)
+
                 episodes.append((state, action, log_prob, reward, value))
                 state = next_state
                 game_move_count += 1
@@ -108,7 +120,7 @@ class PpoDataCollection:
         return self.data_set
 
 
-class PolicyValueTrain:
+class ValuePolicyTrain:
     def __init__(self, agent, dataset, train_config, optimizer):
         self.config = train_config
         self.agent = agent
@@ -117,7 +129,7 @@ class PolicyValueTrain:
         self.loader = DataLoader(dataset, batch_size=self.config['batch_size'], shuffle=True)
         self.agent_output = ('policy_logits', 'value')
         self.data_set_format = ('state', 'policy_target', 'value_target')
-        self.restrictions = set('offline', 'offpolicy', 'nn')
+        self.restrictions = {'offline', 'offpolicy', 'nn'}
 
     def train(self):
         training_logger.info(f"Starting Policy/Value training for {self.config.get('epochs', 'N/A')} epochs.")
@@ -127,7 +139,8 @@ class PolicyValueTrain:
             for states, pi_targets, z_targets in self.loader:
                 policy_logits, values = self.agent(states)  # (B, 4672), (B, 1)
 
-                policy_loss = F.cross_entropy(policy_logits, pi_targets.argmax(dim=1))  # pi_targets: (B, 4672)
+                log_probs = F.log_softmax(policy_logits, dim=1)
+                policy_loss = F.kl_div(log_probs, pi_targets, reduction='batchmean')
                 value_loss = F.mse_loss(values.squeeze(), z_targets)  # z_targets: (B,)
 
                 l2_penalty = sum((p**2).sum() for p in self.agent.parameters())
@@ -146,3 +159,68 @@ class PolicyValueTrain:
                 f"Avg Value Loss: {epoch_value_loss / num_batches:.4f}"
             )
         training_logger.info("Policy/Value training finished.")
+
+
+class ValuePolicyDataCollection:
+    def __init__(self, agent, opponent, data_collection_config):
+        self.config = data_collection_config
+        self.agent = agent
+        self.opponent = opponent
+        self.data_set_format = ('state', 'policy_target', 'value_target')
+        self.data_set = []
+    
+    def collect(self):
+        training_logger.info(f"Starting Policy/Value data collection. Target: {self.config.get('count', 'N/A')} transitions.")
+        chess_env = ChessEnv()
+        
+        while len(self.data_set) < self.config['count']:
+            if hasattr(self.agent, 'mcts') and self.agent.mcts is not None:
+                self.agent.mcts.reset()
+            if hasattr(self.opponent, 'mcts') and self.opponent.mcts is not None:
+                self.opponent.mcts.reset()
+
+            episode_history = []
+            state = chess_env.initial_state()
+            terminated = False
+            game_move_count = 0
+
+            # Randomly assign colors
+            agent_color_is_white = random.choice([True, False])
+
+            while not terminated:
+                current_player_is_white = state[16, 0, 0].item() == 1
+                
+                if current_player_is_white == agent_color_is_white:
+                    # Agent's turn: Use MCTS to get action and policy target
+                    action, policy_target = self.agent.select_action(state, chess_env, return_policy=True)
+                    episode_history.append({'state': state.clone(), 'policy': policy_target, 'player_is_white': current_player_is_white})
+                else:
+                    # Opponent's turn
+                    action = self.opponent.select_action(state, chess_env)
+
+                state, _, terminated, _, _ = chess_env.step(state, action)
+                
+                if hasattr(self.agent, 'mcts') and self.agent.mcts is not None:
+                    self.agent.mcts.advance_tree(action)
+                if hasattr(self.opponent, 'mcts') and self.opponent.mcts is not None:
+                    self.opponent.mcts.advance_tree(action)
+
+                game_move_count += 1
+            
+            training_logger.debug(f"Policy/Value game finished in {game_move_count} moves. Processing trajectory.")
+            
+            # Determine game outcome and assign value targets
+            value_target = chess_env._get_reward(chess_env.board).item()
+
+            # Store transitions with the correct value perspective
+            for data_point in episode_history:
+                s = data_point['state']
+                pi = data_point['policy']
+                player_is_white = data_point['player_is_white']
+                
+                # Value is from the perspective of the current player for that state
+                z = value_target if player_is_white else -value_target
+                self.data_set.append((s, pi, torch.tensor(z, dtype=torch.float32)))
+
+        training_logger.info(f"Policy/Value data collection finished. Collected {len(self.data_set)} transitions.")
+        return self.data_set

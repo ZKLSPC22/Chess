@@ -106,3 +106,214 @@
 2025-06-26 14:24:42 - training - INFO - Starting Value-Policy (VP) training for instance: agent\ppo_resnet\instance0
 2025-06-26 14:24:42 - training - INFO - Collecting training data...
 2025-06-26 14:24:42 - training - INFO - Starting Policy/Value data collection. Target: 2048 transitions.
+2025-06-26 16:36:03 - training - INFO - Starting Value-Policy (VP) training for instance: agent\ppo_resnet\instance1
+2025-06-26 16:36:03 - training - INFO - Collecting training data...
+2025-06-26 16:36:03 - training - INFO - Starting Policy/Value data collection. Target: 2048 transitions.
+2025-06-26 16:45:07 - training - INFO - Starting Value-Policy (VP) training for instance: agent\ppo_resnet\instance1
+2025-06-26 16:45:07 - training - INFO - Collecting training data...
+2025-06-26 16:45:07 - training - INFO - Starting Policy/Value data collection. Target: 2048 transitions.
+2025-06-26 16:48:16 - training - INFO - Starting Value-Policy (VP) training for instance: agent\ppo_resnet\instance0
+2025-06-26 16:48:16 - training - INFO - Collecting training data...
+2025-06-26 16:48:16 - training - INFO - Starting Policy/Value data collection. Target: 2048 transitions.
+2025-06-26 16:51:38 - training - INFO - Starting Value-Policy (VP) training for instance: agent\ppo_resnet\instance1
+2025-06-26 16:51:38 - training - INFO - Collecting training data...
+2025-06-26 16:51:38 - training - INFO - Starting Policy/Value data collection. Target: 2048 transitions.
+2025-06-26 16:51:38 - training - INFO - Starting Policy/Value self-play game #1. Current transitions: 0.
+2025-06-26 16:54:47 - training - INFO - Starting multi-round PPO self-play for 5 rounds.
+2025-06-26 16:54:47 - training - INFO - --- Round 1/5 ---
+2025-06-26 16:54:47 - training - INFO - Starting PPO self-play round for instance: agent\ppo_resnet\instance0
+2025-06-26 16:54:47 - training - INFO - Collecting training data...
+2025-06-26 16:54:47 - training - INFO - Starting PPO data collection. Target: 2048 transitions.
+2025-06-26 16:54:47 - training - INFO - Starting self-play game #1. Current transitions: 0.
+2025-06-26 16:54:48 - training - DEBUG - Game #1, move 1: old_agent selects action 876 from 20 legal actions.
+2025-06-26 16:54:48 - training - DEBUG - Game #1, move 2: new_agent selects action 3898 from 20 legal actions.
+2025-06-26 16:54:49 - training - DEBUG - Game #1, move 3: old_agent selects action 415 from 30 legal actions.
+2025-06-26 16:54:49 - training - DEBUG - Game #1, move 4: new_agent selects action 3532 from 20 legal actions.
+2025-06-26 16:54:50 - training - DEBUG - Game #1, move 5: old_agent selects action 731 from 31 legal actions.
+2025-06-26 16:54:50 - training - DEBUG - Game #1, move 6: new_agent selects action 3824 from 19 legal actions.
+2025-06-26 16:54:51 - training - DEBUG - Game #1, move 7: old_agent selects action 136 from 31 legal actions.
+2025-06-26 16:54:52 - training - DEBUG - Game #1, move 8: new_agent selects action 4587 from 29 legal actions.
+2025-06-26 16:54:52 - training - DEBUG - Game #1, move 9: old_agent selects action 500 from 32 legal actions.
+2025-06-26 16:54:53 - training - DEBUG - Game #1, move 10: new_agent selects action 3970 from 21 legal actions.
+2025-06-26 16:54:53 - training - DEBUG - Game #1, move 11: old_agent selects action 934 from 30 legal actions.
+2025-06-26 16:54:54 - training - DEBUG - Game #1, move 12: new_agent selects action 3678 from 21 legal actions.
+2025-06-26 16:55:09 - training - INFO - Starting Value-Policy (VP) training for instance: agent\ppo_resnet\instance1
+2025-06-26 16:55:09 - training - INFO - Collecting training data...
+2025-06-26 16:55:09 - training - INFO - Starting Policy/Value data collection. Target: 2048 transitions.
+2025-06-26 16:55:09 - training - INFO - Starting Policy/Value self-play game #1. Current transitions: 0.
+2025-06-26 16:55:12 - training - DEBUG - MCTS simulation 10/100
+2025-06-26 16:55:16 - training - DEBUG - MCTS simulation 20/100
+2025-06-26 16:55:21 - training - DEBUG - MCTS simulation 30/100
+2025-06-26 16:55:26 - training - DEBUG - MCTS simulation 40/100
+2025-06-26 16:55:32 - training - DEBUG - MCTS simulation 50/100
+2025-06-26 16:55:42 - training - DEBUG - MCTS simulation 60/100
+2025-06-26 16:55:52 - training - DEBUG - MCTS simulation 70/100
+2025-06-26 16:56:03 - training - DEBUG - MCTS simulation 80/100
+2025-06-26 16:56:07 - training - DEBUG - MCTS simulation 90/100
+2025-06-26 16:56:13 - training - DEBUG - MCTS simulation 100/100
+2025-06-26 16:56:13 - training - INFO - MCTS completed 100 simulations for select_action.
+2025-06-26 16:56:13 - training - DEBUG - Game #1, move 1: opponent selects action 730.
+2025-06-26 16:56:13 - training - DEBUG - Game #1, move 2: agent selects action 3898.
+2025-06-26 16:56:17 - training - DEBUG - MCTS simulation 10/100
+2025-06-26 16:56:22 - training - DEBUG - MCTS simulation 20/100
+2025-06-26 16:56:29 - training - DEBUG - MCTS simulation 30/100
+2025-06-26 16:56:33 - training - DEBUG - MCTS simulation 40/100
+2025-06-26 16:56:39 - training - DEBUG - MCTS simulation 50/100
+2025-06-26 16:56:44 - training - DEBUG - MCTS simulation 60/100
+2025-06-26 16:56:48 - training - DEBUG - MCTS simulation 70/100
+2025-06-26 16:56:53 - training - DEBUG - MCTS simulation 80/100
+2025-06-26 16:56:57 - training - DEBUG - MCTS simulation 90/100
+2025-06-26 16:57:01 - training - DEBUG - MCTS simulation 100/100
+2025-06-26 16:57:01 - training - INFO - MCTS completed 100 simulations for select_action.
+2025-06-26 16:57:02 - training - DEBUG - Game #1, move 3: opponent selects action 1314.
+2025-06-26 16:57:02 - training - DEBUG - Game #1, move 4: agent selects action 3533.
+2025-06-26 16:57:06 - training - DEBUG - MCTS simulation 10/100
+2025-06-26 16:57:10 - training - DEBUG - MCTS simulation 20/100
+2025-06-26 16:57:14 - training - DEBUG - MCTS simulation 30/100
+2025-06-26 16:57:19 - training - DEBUG - MCTS simulation 40/100
+2025-06-26 16:57:23 - training - DEBUG - MCTS simulation 50/100
+2025-06-26 16:57:28 - training - DEBUG - MCTS simulation 60/100
+2025-06-26 16:57:32 - training - DEBUG - MCTS simulation 70/100
+2025-06-26 16:57:36 - training - DEBUG - MCTS simulation 80/100
+2025-06-26 16:57:41 - training - DEBUG - MCTS simulation 90/100
+2025-06-26 16:57:45 - training - DEBUG - MCTS simulation 100/100
+2025-06-26 16:57:45 - training - INFO - MCTS completed 100 simulations for select_action.
+2025-06-26 16:57:46 - training - DEBUG - Game #1, move 5: opponent selects action 950.
+2025-06-26 16:57:46 - training - DEBUG - Game #1, move 6: agent selects action 3606.
+2025-06-26 16:57:50 - training - DEBUG - MCTS simulation 10/100
+2025-06-26 16:57:54 - training - DEBUG - MCTS simulation 20/100
+2025-06-26 16:57:59 - training - DEBUG - MCTS simulation 30/100
+2025-06-26 16:58:03 - training - DEBUG - MCTS simulation 40/100
+2025-06-26 16:58:07 - training - DEBUG - MCTS simulation 50/100
+2025-06-26 16:58:12 - training - DEBUG - MCTS simulation 60/100
+2025-06-26 16:58:16 - training - DEBUG - MCTS simulation 70/100
+2025-06-26 16:58:20 - training - DEBUG - MCTS simulation 80/100
+2025-06-26 16:58:24 - training - DEBUG - MCTS simulation 90/100
+2025-06-26 16:58:29 - training - DEBUG - MCTS simulation 100/100
+2025-06-26 16:58:29 - training - INFO - MCTS completed 100 simulations for select_action.
+2025-06-26 16:58:29 - training - DEBUG - Game #1, move 7: opponent selects action 270.
+2025-06-26 16:58:29 - training - DEBUG - Game #1, move 8: agent selects action 2430.
+2025-06-26 16:58:33 - training - DEBUG - MCTS simulation 10/100
+2025-06-26 16:58:36 - training - DEBUG - MCTS simulation 20/100
+2025-06-26 16:58:40 - training - DEBUG - MCTS simulation 30/100
+2025-06-26 16:58:45 - training - DEBUG - MCTS simulation 40/100
+2025-06-26 16:58:51 - training - DEBUG - MCTS simulation 50/100
+2025-06-26 16:58:56 - training - DEBUG - MCTS simulation 60/100
+2025-06-26 16:59:02 - training - DEBUG - MCTS simulation 70/100
+2025-06-26 16:59:07 - training - DEBUG - MCTS simulation 80/100
+2025-06-26 16:59:12 - training - DEBUG - MCTS simulation 90/100
+2025-06-26 16:59:17 - training - DEBUG - MCTS simulation 100/100
+2025-06-26 16:59:17 - training - INFO - MCTS completed 100 simulations for select_action.
+2025-06-26 16:59:18 - training - DEBUG - Game #1, move 9: opponent selects action 129.
+2025-06-26 16:59:18 - training - DEBUG - Game #1, move 10: agent selects action 4270.
+2025-06-26 16:59:21 - training - DEBUG - MCTS simulation 10/100
+2025-06-26 16:59:25 - training - DEBUG - MCTS simulation 20/100
+2025-06-26 16:59:28 - training - DEBUG - MCTS simulation 30/100
+2025-06-26 16:59:34 - training - DEBUG - MCTS simulation 40/100
+2025-06-26 16:59:39 - training - DEBUG - MCTS simulation 50/100
+2025-06-26 16:59:45 - training - DEBUG - MCTS simulation 60/100
+2025-06-26 16:59:51 - training - DEBUG - MCTS simulation 70/100
+2025-06-26 16:59:57 - training - DEBUG - MCTS simulation 80/100
+2025-06-26 17:00:03 - training - DEBUG - MCTS simulation 90/100
+2025-06-26 17:00:11 - training - DEBUG - MCTS simulation 100/100
+2025-06-26 17:00:11 - training - INFO - MCTS completed 100 simulations for select_action.
+2025-06-26 17:00:11 - training - DEBUG - Game #1, move 11: opponent selects action 1374.
+2025-06-26 17:00:11 - training - DEBUG - Game #1, move 12: agent selects action 2941.
+2025-06-26 17:00:16 - training - DEBUG - MCTS simulation 10/100
+2025-06-26 17:00:20 - training - DEBUG - MCTS simulation 20/100
+2025-06-26 17:00:24 - training - DEBUG - MCTS simulation 30/100
+2025-06-26 17:00:29 - training - DEBUG - MCTS simulation 40/100
+2025-06-26 17:00:34 - training - DEBUG - MCTS simulation 50/100
+2025-06-26 17:00:39 - training - DEBUG - MCTS simulation 60/100
+2025-06-26 17:00:45 - training - DEBUG - MCTS simulation 70/100
+2025-06-26 17:00:49 - training - DEBUG - MCTS simulation 80/100
+2025-06-26 17:00:54 - training - DEBUG - MCTS simulation 90/100
+2025-06-26 17:00:58 - training - DEBUG - MCTS simulation 100/100
+2025-06-26 17:00:58 - training - INFO - MCTS completed 100 simulations for select_action.
+2025-06-26 17:00:58 - training - DEBUG - Game #1, move 13: opponent selects action 1759.
+2025-06-26 17:00:58 - training - DEBUG - Game #1, move 14: agent selects action 2364.
+2025-06-26 17:01:03 - training - DEBUG - MCTS simulation 10/100
+2025-06-26 17:01:07 - training - DEBUG - MCTS simulation 20/100
+2025-06-26 17:01:10 - training - DEBUG - MCTS simulation 30/100
+2025-06-26 17:01:15 - training - DEBUG - MCTS simulation 40/100
+2025-06-26 17:01:22 - training - DEBUG - MCTS simulation 50/100
+2025-06-26 17:01:28 - training - DEBUG - MCTS simulation 60/100
+2025-06-26 17:01:33 - training - DEBUG - MCTS simulation 70/100
+2025-06-26 17:01:39 - training - DEBUG - MCTS simulation 80/100
+2025-06-26 17:01:46 - training - DEBUG - MCTS simulation 90/100
+2025-06-26 17:01:52 - training - DEBUG - MCTS simulation 100/100
+2025-06-26 17:01:52 - training - INFO - MCTS completed 100 simulations for select_action.
+2025-06-26 17:01:52 - training - DEBUG - Game #1, move 15: opponent selects action 2438.
+2025-06-26 17:01:52 - training - DEBUG - Game #1, move 16: agent selects action 4044.
+2025-06-26 17:01:57 - training - DEBUG - MCTS simulation 10/100
+2025-06-26 17:02:02 - training - DEBUG - MCTS simulation 20/100
+2025-06-26 17:02:07 - training - DEBUG - MCTS simulation 30/100
+2025-06-26 17:02:12 - training - DEBUG - MCTS simulation 40/100
+2025-06-26 17:02:18 - training - DEBUG - MCTS simulation 50/100
+2025-06-26 17:02:23 - training - DEBUG - MCTS simulation 60/100
+2025-06-26 17:02:29 - training - DEBUG - MCTS simulation 70/100
+2025-06-26 17:02:35 - training - DEBUG - MCTS simulation 80/100
+2025-06-26 17:02:40 - training - DEBUG - MCTS simulation 90/100
+2025-06-26 17:02:46 - training - DEBUG - MCTS simulation 100/100
+2025-06-26 17:02:46 - training - INFO - MCTS completed 100 simulations for select_action.
+2025-06-26 17:02:46 - training - DEBUG - Game #1, move 17: opponent selects action 1259.
+2025-06-26 17:02:47 - training - DEBUG - Game #1, move 18: agent selects action 4585.
+2025-06-26 17:02:51 - training - DEBUG - MCTS simulation 10/100
+2025-06-26 17:02:55 - training - DEBUG - MCTS simulation 20/100
+2025-06-26 17:03:00 - training - DEBUG - MCTS simulation 30/100
+2025-06-26 17:03:05 - training - DEBUG - MCTS simulation 40/100
+2025-06-26 17:03:11 - training - DEBUG - MCTS simulation 50/100
+2025-06-26 17:03:17 - training - DEBUG - MCTS simulation 60/100
+2025-06-26 17:03:22 - training - DEBUG - MCTS simulation 70/100
+2025-06-26 17:03:27 - training - DEBUG - MCTS simulation 80/100
+2025-06-26 17:03:33 - training - DEBUG - MCTS simulation 90/100
+2025-06-26 17:03:38 - training - DEBUG - MCTS simulation 100/100
+2025-06-26 17:03:38 - training - INFO - MCTS completed 100 simulations for select_action.
+2025-06-26 17:03:38 - training - DEBUG - Game #1, move 19: opponent selects action 803.
+2025-06-26 17:03:38 - training - DEBUG - Game #1, move 20: agent selects action 4401.
+2025-06-26 17:03:44 - training - DEBUG - MCTS simulation 10/100
+2025-06-26 17:03:49 - training - DEBUG - MCTS simulation 20/100
+2025-06-26 17:03:54 - training - DEBUG - MCTS simulation 30/100
+2025-06-26 17:03:59 - training - DEBUG - MCTS simulation 40/100
+2025-06-26 17:04:06 - training - DEBUG - MCTS simulation 50/100
+2025-06-26 17:04:11 - training - DEBUG - MCTS simulation 60/100
+2025-06-26 17:04:17 - training - DEBUG - MCTS simulation 70/100
+2025-06-26 17:04:22 - training - DEBUG - MCTS simulation 80/100
+2025-06-26 17:04:28 - training - DEBUG - MCTS simulation 90/100
+2025-06-26 17:04:33 - training - DEBUG - MCTS simulation 100/100
+2025-06-26 17:04:33 - training - INFO - MCTS completed 100 simulations for select_action.
+2025-06-26 17:04:33 - training - DEBUG - Game #1, move 21: opponent selects action 130.
+2025-06-26 17:04:34 - training - DEBUG - Game #1, move 22: agent selects action 3678.
+2025-06-26 17:04:39 - training - DEBUG - MCTS simulation 10/100
+2025-06-26 17:04:44 - training - DEBUG - MCTS simulation 20/100
+2025-06-26 17:04:49 - training - DEBUG - MCTS simulation 30/100
+2025-06-26 17:04:54 - training - DEBUG - MCTS simulation 40/100
+2025-06-26 17:05:00 - training - DEBUG - MCTS simulation 50/100
+2025-06-26 17:05:05 - training - DEBUG - MCTS simulation 60/100
+2025-06-26 17:05:11 - training - DEBUG - MCTS simulation 70/100
+2025-06-26 17:05:16 - training - DEBUG - MCTS simulation 80/100
+2025-06-26 17:05:22 - training - DEBUG - MCTS simulation 90/100
+2025-06-26 17:05:27 - training - DEBUG - MCTS simulation 100/100
+2025-06-26 17:05:27 - training - INFO - MCTS completed 100 simulations for select_action.
+2025-06-26 17:05:27 - training - DEBUG - Game #1, move 23: opponent selects action 494.
+2025-06-26 17:05:27 - training - DEBUG - Game #1, move 24: agent selects action 3971.
+2025-06-26 17:05:33 - training - DEBUG - MCTS simulation 10/100
+2025-06-26 17:05:38 - training - DEBUG - MCTS simulation 20/100
+2025-06-26 17:05:44 - training - DEBUG - MCTS simulation 30/100
+2025-06-26 17:05:49 - training - DEBUG - MCTS simulation 40/100
+2025-06-26 17:05:54 - training - DEBUG - MCTS simulation 50/100
+2025-06-26 17:05:59 - training - DEBUG - MCTS simulation 60/100
+2025-06-26 17:06:05 - training - DEBUG - MCTS simulation 70/100
+2025-06-26 17:06:11 - training - DEBUG - MCTS simulation 80/100
+2025-06-26 17:06:16 - training - DEBUG - MCTS simulation 90/100
+2025-06-26 17:06:21 - training - DEBUG - MCTS simulation 100/100
+2025-06-26 17:06:21 - training - INFO - MCTS completed 100 simulations for select_action.
+2025-06-26 17:06:21 - training - DEBUG - Game #1, move 25: opponent selects action 658.
+2025-06-26 17:06:22 - training - DEBUG - Game #1, move 26: agent selects action 4321.
+2025-06-26 17:06:27 - training - DEBUG - MCTS simulation 10/100
+2025-06-26 17:06:31 - training - DEBUG - MCTS simulation 20/100
+2025-06-26 17:06:36 - training - DEBUG - MCTS simulation 30/100
+2025-06-26 17:06:42 - training - DEBUG - MCTS simulation 40/100
+2025-06-26 17:06:47 - training - DEBUG - MCTS simulation 50/100
+2025-06-26 17:06:53 - training - DEBUG - MCTS simulation 60/100
+2025-06-26 17:07:00 - training - DEBUG - MCTS simulation 70/100

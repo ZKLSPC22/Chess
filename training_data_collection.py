@@ -60,8 +60,11 @@ class PpoDataCollection:
         training_logger.info(f"Starting PPO data collection. Target: {self.config.get('count', 'N/A')} transitions.")
         new_agent_color = random.randint(0, 1)
         chess_env = ChessEnv()
+        last_reported = 0
+        game_counter = 0
         
         while len(self.data_set) < self.config['count']:
+            game_counter += 1
             if hasattr(self.new_agent, 'mcts') and self.new_agent.mcts is not None:
                 self.new_agent.mcts.reset()
             if hasattr(self.old_agent, 'mcts') and self.old_agent.mcts is not None:
@@ -71,10 +74,12 @@ class PpoDataCollection:
             state = chess_env.initial_state()
             terminated = False
             game_move_count = 0
+            training_logger.info(f"Starting self-play game #{game_counter}. Current transitions: {len(self.data_set)}.")
             
             while not terminated:
                 state_color = state[16, 0, 0].item()
                 agent = self.new_agent if state_color == new_agent_color else self.old_agent
+                agent_type = 'new_agent' if state_color == new_agent_color else 'old_agent'
                 legal_actions = get_legal_actions(state)
                 if not legal_actions:
                     raise ValueError("Checkmate or stalemate undetected by the environment")
@@ -92,6 +97,7 @@ class PpoDataCollection:
                     action = result if isinstance(result, int) else result[0]
                     log_prob = torch.log(probs[action])
                 
+                training_logger.debug(f"Game #{game_counter}, move {game_move_count+1}: {agent_type} selects action {action} from {len(legal_actions)} legal actions.")
                 next_state, reward, terminated, truncated, info = chess_env.step(state, action)
                 
                 if hasattr(self.new_agent, 'mcts') and self.new_agent.mcts is not None:
@@ -103,7 +109,7 @@ class PpoDataCollection:
                 state = next_state
                 game_move_count += 1
             
-            training_logger.debug(f"Self-play game finished in {game_move_count} moves. Processing trajectory.")
+            training_logger.info(f"Self-play game #{game_counter} finished in {game_move_count} moves. Processing trajectory.")
             # Calculate returns for each state in the episode
             returns = []
             R = 0.0  # Initialize return
@@ -112,10 +118,16 @@ class PpoDataCollection:
                 R = reward + self.config['gamma'] * R  # Discounted return
                 returns.insert(0, R) # Insert at the beginning of the list
             
+            training_logger.debug(f"Processing {len(episodes)} transitions from game #{game_counter}.")
             # Calculate advantages and store final transitions
-            for (state, action, old_log_prob, reward, value), ret in zip(episodes, returns):
+            for idx, ((state, action, old_log_prob, reward, value), ret) in enumerate(zip(episodes, returns)):
                 adv = ret - value.item()  # Advantage = return - value
                 self.data_set.append((state, action, old_log_prob, ret, adv))
+                training_logger.debug(f"Game #{game_counter}, transition {idx+1}: action={action}, return={ret:.4f}, advantage={adv:.4f}.")
+                # Periodic progress logging
+                if len(self.data_set) - last_reported >= 100:
+                    training_logger.info(f"Collected {len(self.data_set)} transitions so far...")
+                    last_reported = len(self.data_set)
                 
         training_logger.info(f"PPO data collection finished. Collected {len(self.data_set)} transitions.")
         return self.data_set
@@ -173,6 +185,8 @@ class ValuePolicyDataCollection:
     def collect(self):
         training_logger.info(f"Starting Policy/Value data collection. Target: {self.config.get('count', 'N/A')} transitions.")
         chess_env = ChessEnv()
+        last_reported = 0
+        game_counter = 0
         
         while len(self.data_set) < self.config['count']:
             if hasattr(self.agent, 'mcts') and self.agent.mcts is not None:
@@ -184,9 +198,10 @@ class ValuePolicyDataCollection:
             state = chess_env.initial_state()
             terminated = False
             game_move_count = 0
-
+            game_counter += 1
             # Randomly assign colors
             agent_color_is_white = random.choice([True, False])
+            training_logger.info(f"Starting Policy/Value self-play game #{game_counter}. Current transitions: {len(self.data_set)}.")
 
             while not terminated:
                 current_player_is_white = state[16, 0, 0].item() == 1
@@ -196,11 +211,14 @@ class ValuePolicyDataCollection:
                     result = self.agent.select_action(state)
                     action = result if isinstance(result, int) else result[0]
                     episode_history.append({'state': state.clone(), 'policy': action, 'player_is_white': current_player_is_white})
+                    agent_type = 'agent'
                 else:
                     # Opponent's turn
                     result = self.opponent.select_action(state)
                     action = result if isinstance(result, int) else result[0]
+                    agent_type = 'opponent'
 
+                training_logger.debug(f"Game #{game_counter}, move {game_move_count+1}: {agent_type} selects action {action}.")
                 state, _, terminated, _, _ = chess_env.step(state, action)
                 
                 if hasattr(self.agent, 'mcts') and self.agent.mcts is not None:
@@ -210,13 +228,13 @@ class ValuePolicyDataCollection:
 
                 game_move_count += 1
             
-            training_logger.debug(f"Policy/Value game finished in {game_move_count} moves. Processing trajectory.")
-            
+            training_logger.info(f"Policy/Value self-play game #{game_counter} finished in {game_move_count} moves. Processing trajectory.")
             # Determine game outcome and assign value targets
             value_target = chess_env._get_reward(chess_env.board).item()
 
+            training_logger.debug(f"Processing {len(episode_history)} transitions from game #{game_counter}.")
             # Store transitions with the correct value perspective
-            for data_point in episode_history:
+            for idx, data_point in enumerate(episode_history):
                 s = data_point['state']
                 pi = data_point['policy']
                 player_is_white = data_point['player_is_white']
@@ -224,6 +242,12 @@ class ValuePolicyDataCollection:
                 # Value is from the perspective of the current player for that state
                 z = value_target if player_is_white else -value_target
                 self.data_set.append((s, pi, torch.tensor(z, dtype=torch.float32)))
+                training_logger.debug(f"Game #{game_counter}, transition {idx+1}: action={pi}, value_target={z}.")
+                
+                # Periodic progress logging
+                if len(self.data_set) - last_reported >= 100:
+                    training_logger.info(f"Collected {len(self.data_set)} transitions so far...")
+                    last_reported = len(self.data_set)
 
         training_logger.info(f"Policy/Value data collection finished. Collected {len(self.data_set)} transitions.")
         return self.data_set

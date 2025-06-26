@@ -60,8 +60,12 @@ class MCTS:
             self.root, _ = self.get_or_create_node(state)
 
         num_sims_to_run = self.num_simulations
-        for _ in range(num_sims_to_run):
+        logger = logging.getLogger('training')
+        for sim in range(num_sims_to_run):
             self.sesb(self.root)
+            if (sim + 1) % 10 == 0 or sim == num_sims_to_run - 1:
+                logger.debug(f"MCTS simulation {sim + 1}/{num_sims_to_run}")
+        logger.info(f"MCTS completed {num_sims_to_run} simulations for select_action.")
         
         if not self.root.children:
             raise ValueError("select_action: No children found for the root node")

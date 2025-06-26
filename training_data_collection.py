@@ -2,7 +2,7 @@ import random
 import torch
 import torch.nn.functional as F
 import logging
-from env import ChessEnv
+from env import *
 from torch.utils.data import DataLoader
 from planning.mcts import MCTS
 import torch.optim as optim
@@ -75,7 +75,7 @@ class PpoDataCollection:
             while not terminated:
                 state_color = state[16, 0, 0].item()
                 agent = self.new_agent if state_color == new_agent_color else self.old_agent
-                legal_actions = chess_env.get_legal_actions(state)
+                legal_actions = get_legal_actions(state)
                 if not legal_actions:
                     raise ValueError("Checkmate or stalemate undetected by the environment")
                 
@@ -88,7 +88,8 @@ class PpoDataCollection:
                     mask[legal_actions] = True
                     masked_logits = policy_logits.masked_fill(~mask, float('-inf'))
                     probs = torch.softmax(masked_logits, dim=0)
-                    action = torch.multinomial(probs, 1).item()
+                    result = agent.select_action(state)
+                    action = result if isinstance(result, int) else result[0]
                     log_prob = torch.log(probs[action])
                 
                 next_state, reward, terminated, truncated, info = chess_env.step(state, action)
@@ -192,11 +193,13 @@ class ValuePolicyDataCollection:
                 
                 if current_player_is_white == agent_color_is_white:
                     # Agent's turn: Use MCTS to get action and policy target
-                    action, policy_target = self.agent.select_action(state)
-                    episode_history.append({'state': state.clone(), 'policy': policy_target, 'player_is_white': current_player_is_white})
+                    result = self.agent.select_action(state)
+                    action = result if isinstance(result, int) else result[0]
+                    episode_history.append({'state': state.clone(), 'policy': action, 'player_is_white': current_player_is_white})
                 else:
                     # Opponent's turn
-                    action = self.opponent.select_action(state)
+                    result = self.opponent.select_action(state)
+                    action = result if isinstance(result, int) else result[0]
 
                 state, _, terminated, _, _ = chess_env.step(state, action)
                 

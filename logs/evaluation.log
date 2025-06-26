@@ -35,3 +35,140 @@
 2025-06-25 18:20:14 - evaluation - INFO - Starting new game: Human vs. Agent (MctsRandom)
 2025-06-25 18:20:14 - evaluation - INFO - Human is playing as WHITE
 2025-06-25 18:20:20 - evaluation - INFO - Human played move: a2a3
+2025-06-26 14:26:33 - evaluation - INFO - Starting new game: Human vs. Agent (MctsPpoPvlResnet)
+2025-06-26 14:26:33 - evaluation - INFO - Human is playing as BLACK
+2025-06-26 15:53:58 - evaluation - INFO - Starting new game: Human vs. Agent (MctsPpoPvlResnet)
+2025-06-26 15:53:58 - evaluation - INFO - Human is playing as WHITE
+2025-06-26 16:02:27 - evaluation - INFO - Starting new game: Human vs. Agent (PpoResnet)
+2025-06-26 16:02:27 - evaluation - INFO - Human is playing as BLACK
+2025-06-26 16:02:29 - evaluation - INFO - Agent played move: d6e7b
+2025-06-26 16:03:43 - evaluation - INFO - Starting new game: Human vs. Agent (PpoResnet)
+2025-06-26 16:03:43 - evaluation - INFO - Human is playing as WHITE
+2025-06-26 16:07:27 - evaluation - INFO - Starting new game: Human vs. Agent (PpoResnet)
+2025-06-26 16:07:27 - evaluation - INFO - Human is playing as WHITE
+2025-06-26 16:07:35 - evaluation - INFO - Human played move: d2d4
+2025-06-26 16:07:36 - evaluation - INFO - Agent played move: a2b1q
+2025-06-26 16:07:38 - evaluation - INFO - Agent played move: b3c2b
+2025-06-26 16:07:40 - evaluation - INFO - Agent played move: f2b2
+2025-06-26 16:07:42 - evaluation - INFO - Agent played move: h3h3
+2025-06-26 16:07:44 - evaluation - INFO - Agent played move: d5d5
+2025-06-26 16:07:47 - evaluation - INFO - Agent played move: g1d4
+2025-06-26 16:07:49 - evaluation - INFO - Agent played move: h8f8
+2025-06-26 16:07:51 - evaluation - INFO - Agent played move: c4c4
+2025-06-26 16:07:53 - evaluation - INFO - Agent played move: a6b5
+2025-06-26 16:07:55 - evaluation - INFO - Agent played move: g3c7
+2025-06-26 16:07:57 - evaluation - INFO - Agent played move: d1d1
+2025-06-26 16:07:59 - evaluation - INFO - Agent played move: e7d7
+2025-06-26 16:08:01 - evaluation - INFO - Agent played move: c1c1
+2025-06-26 16:08:03 - evaluation - INFO - Agent played move: d2d2
+2025-06-26 16:08:05 - evaluation - INFO - Agent played move: g3h5
+2025-06-26 16:08:07 - evaluation - INFO - Agent played move: h7c7
+2025-06-26 16:08:09 - evaluation - INFO - Agent played move: f2d3
+2025-06-26 16:08:11 - evaluation - INFO - Agent played move: f8f8
+2025-06-26 16:08:13 - evaluation - INFO - Agent played move: d2d2
+2025-06-26 16:08:15 - evaluation - INFO - Agent played move: h4e4
+2025-06-26 16:08:17 - evaluation - INFO - Agent played move: a2a2
+2025-06-26 16:08:19 - evaluation - INFO - Agent played move: a2a2
+2025-06-26 16:08:21 - evaluation - INFO - Agent played move: d1e2
+2025-06-26 16:08:23 - evaluation - INFO - Agent played move: f6b6
+2025-06-26 16:08:25 - evaluation - INFO - Agent played move: b5b7
+2025-06-26 16:08:27 - evaluation - INFO - Agent played move: g1g1
+2025-06-26 16:08:29 - evaluation - INFO - Agent played move: h3h3
+2025-06-26 16:08:31 - evaluation - INFO - Agent played move: f7f8
+2025-06-26 16:08:33 - evaluation - INFO - Agent played move: d6d6
+2025-06-26 16:08:35 - evaluation - INFO - Agent played move: g1b1
+2025-06-26 16:08:38 - evaluation - INFO - Agent played move: h2h2
+2025-06-26 16:08:40 - evaluation - INFO - Agent played move: f2f2
+2025-06-26 16:08:42 - evaluation - INFO - Agent played move: d7g7
+2025-06-26 16:08:44 - evaluation - INFO - Agent played move: e5e7
+2025-06-26 16:08:46 - evaluation - INFO - Agent played move: g5g5
+2025-06-26 16:08:48 - evaluation - INFO - Agent played move: h5g4r
+2025-06-26 16:08:50 - evaluation - INFO - Agent played move: h3h3
+2025-06-26 16:08:52 - evaluation - INFO - Agent played move: h1h1
+2025-06-26 16:08:54 - evaluation - INFO - Agent played move: g8h7r
+2025-06-26 16:08:56 - evaluation - INFO - Agent played move: c2b1r
+2025-06-26 16:08:58 - evaluation - INFO - Agent played move: d6e5r
+2025-06-26 16:09:00 - evaluation - INFO - Agent played move: f5f5
+2025-06-26 16:09:02 - evaluation - INFO - Agent played move: h5h5
+2025-06-26 16:09:04 - evaluation - INFO - Agent played move: b2b2
+2025-06-26 16:09:06 - evaluation - INFO - Agent played move: g6g6
+2025-06-26 16:09:08 - evaluation - INFO - Agent played move: h6h6
+2025-06-26 16:09:10 - evaluation - INFO - Agent played move: f7f7
+2025-06-26 16:09:13 - evaluation - INFO - Agent played move: d6d6
+2025-06-26 16:09:15 - evaluation - INFO - Agent played move: c2e4
+2025-06-26 16:09:17 - evaluation - INFO - Agent played move: g3b8
+2025-06-26 16:09:19 - evaluation - INFO - Agent played move: e2h2
+2025-06-26 16:09:21 - evaluation - INFO - Agent played move: b3b3
+2025-06-26 16:09:23 - evaluation - INFO - Agent played move: d2e1
+2025-06-26 16:09:25 - evaluation - INFO - Agent played move: b5a4
+2025-06-26 16:09:27 - evaluation - INFO - Agent played move: g3g3
+2025-06-26 16:09:29 - evaluation - INFO - Agent played move: h2h1r
+2025-06-26 16:09:32 - evaluation - INFO - Agent played move: h1g2
+2025-06-26 16:09:34 - evaluation - INFO - Agent played move: c4b4
+2025-06-26 16:09:36 - evaluation - INFO - Agent played move: e7e7
+2025-06-26 16:09:38 - evaluation - INFO - Agent played move: c4a4
+2025-06-26 16:09:40 - evaluation - INFO - Agent played move: h6h8
+2025-06-26 16:09:42 - evaluation - INFO - Agent played move: c4c3
+2025-06-26 16:09:44 - evaluation - INFO - Agent played move: d3c2r
+2025-06-26 16:09:46 - evaluation - INFO - Agent played move: g6g6
+2025-06-26 16:09:48 - evaluation - INFO - Agent played move: g3f1
+2025-06-26 16:09:50 - evaluation - INFO - Agent played move: a4f4
+2025-06-26 16:09:52 - evaluation - INFO - Agent played move: c2c7
+2025-06-26 16:09:55 - evaluation - INFO - Agent played move: f5f5
+2025-06-26 16:10:28 - evaluation - INFO - Starting new game: Human vs. Agent (PpoResnet)
+2025-06-26 16:10:28 - evaluation - INFO - Human is playing as WHITE
+2025-06-26 16:10:33 - evaluation - INFO - Human played move: d2d4
+2025-06-26 16:10:34 - evaluation - INFO - DEBUG: Legal moves available to AI before selection: ['g8h6', 'g8f6', 'b8c6', 'b8a6', 'h7h6', 'g7g6', 'f7f6', 'e7e6', 'd7d6', 'c7c6', 'b7b6', 'a7a6', 'h7h5', 'g7g5', 'f7f5', 'e7e5', 'd7d5', 'c7c5', 'b7b5', 'a7a5']
+2025-06-26 16:10:34 - evaluation - INFO - DEBUG: Agent selected action index: 4636
+2025-06-26 16:10:34 - evaluation - INFO - Agent played move: h8e5
+2025-06-26 16:10:36 - evaluation - INFO - DEBUG: Legal moves available to AI before selection: ['g8h6', 'g8f6', 'b8c6', 'b8a6', 'h7h6', 'g7g6', 'f7f6', 'e7e6', 'd7d6', 'c7c6', 'b7b6', 'a7a6', 'h7h5', 'g7g5', 'f7f5', 'e7e5', 'd7d5', 'c7c5', 'b7b5', 'a7a5']
+2025-06-26 16:10:37 - evaluation - INFO - DEBUG: Agent selected action index: 1493
+2025-06-26 16:10:37 - evaluation - INFO - Agent played move: e3e3
+2025-06-26 16:10:39 - evaluation - INFO - DEBUG: Legal moves available to AI before selection: ['g8h6', 'g8f6', 'b8c6', 'b8a6', 'h7h6', 'g7g6', 'f7f6', 'e7e6', 'd7d6', 'c7c6', 'b7b6', 'a7a6', 'h7h5', 'g7g5', 'f7f5', 'e7e5', 'd7d5', 'c7c5', 'b7b5', 'a7a5']
+2025-06-26 16:10:39 - evaluation - INFO - DEBUG: Agent selected action index: 3772
+2025-06-26 16:10:39 - evaluation - INFO - Agent played move: d7c8
+2025-06-26 16:10:41 - evaluation - INFO - DEBUG: Legal moves available to AI before selection: ['g8h6', 'g8f6', 'b8c6', 'b8a6', 'h7h6', 'g7g6', 'f7f6', 'e7e6', 'd7d6', 'c7c6', 'b7b6', 'a7a6', 'h7h5', 'g7g5', 'f7f5', 'e7e5', 'd7d5', 'c7c5', 'b7b5', 'a7a5']
+2025-06-26 16:10:41 - evaluation - INFO - DEBUG: Agent selected action index: 250
+2025-06-26 16:10:41 - evaluation - INFO - Agent played move: d1d1
+2025-06-26 16:10:43 - evaluation - INFO - DEBUG: Legal moves available to AI before selection: ['g8h6', 'g8f6', 'b8c6', 'b8a6', 'h7h6', 'g7g6', 'f7f6', 'e7e6', 'd7d6', 'c7c6', 'b7b6', 'a7a6', 'h7h5', 'g7g5', 'f7f5', 'e7e5', 'd7d5', 'c7c5', 'b7b5', 'a7a5']
+2025-06-26 16:10:43 - evaluation - INFO - DEBUG: Agent selected action index: 2433
+2025-06-26 16:10:43 - evaluation - INFO - Agent played move: b5f1
+2025-06-26 16:10:45 - evaluation - INFO - DEBUG: Legal moves available to AI before selection: ['g8h6', 'g8f6', 'b8c6', 'b8a6', 'h7h6', 'g7g6', 'f7f6', 'e7e6', 'd7d6', 'c7c6', 'b7b6', 'a7a6', 'h7h5', 'g7g5', 'f7f5', 'e7e5', 'd7d5', 'c7c5', 'b7b5', 'a7a5']
+2025-06-26 16:10:45 - evaluation - INFO - DEBUG: Agent selected action index: 721
+2025-06-26 16:10:45 - evaluation - INFO - Agent played move: b2a1n
+2025-06-26 16:10:47 - evaluation - INFO - DEBUG: Legal moves available to AI before selection: ['g8h6', 'g8f6', 'b8c6', 'b8a6', 'h7h6', 'g7g6', 'f7f6', 'e7e6', 'd7d6', 'c7c6', 'b7b6', 'a7a6', 'h7h5', 'g7g5', 'f7f5', 'e7e5', 'd7d5', 'c7c5', 'b7b5', 'a7a5']
+2025-06-26 16:10:47 - evaluation - INFO - DEBUG: Agent selected action index: 4373
+2025-06-26 16:10:47 - evaluation - INFO - Agent played move: d8e7n
+2025-06-26 16:10:49 - evaluation - INFO - DEBUG: Legal moves available to AI before selection: ['g8h6', 'g8f6', 'b8c6', 'b8a6', 'h7h6', 'g7g6', 'f7f6', 'e7e6', 'd7d6', 'c7c6', 'b7b6', 'a7a6', 'h7h5', 'g7g5', 'f7f5', 'e7e5', 'd7d5', 'c7c5', 'b7b5', 'a7a5']
+2025-06-26 16:10:49 - evaluation - INFO - DEBUG: Agent selected action index: 1139
+2025-06-26 16:10:49 - evaluation - INFO - Agent played move: h2e2
+2025-06-26 16:10:51 - evaluation - INFO - DEBUG: Legal moves available to AI before selection: ['g8h6', 'g8f6', 'b8c6', 'b8a6', 'h7h6', 'g7g6', 'f7f6', 'e7e6', 'd7d6', 'c7c6', 'b7b6', 'a7a6', 'h7h5', 'g7g5', 'f7f5', 'e7e5', 'd7d5', 'c7c5', 'b7b5', 'a7a5']
+2025-06-26 16:10:51 - evaluation - INFO - DEBUG: Agent selected action index: 1111
+2025-06-26 16:10:51 - evaluation - INFO - Agent played move: h2h2
+2025-06-26 16:13:22 - evaluation - INFO - Starting new game: Human vs. Agent (PpoResnet)
+2025-06-26 16:13:22 - evaluation - INFO - Human is playing as BLACK
+2025-06-26 16:13:24 - evaluation - INFO - DEBUG: Legal moves available to AI before selection: ['g1h3', 'g1f3', 'b1c3', 'b1a3', 'h2h3', 'g2g3', 'f2f3', 'e2e3', 'd2d3', 'c2c3', 'b2b3', 'a2a3', 'h2h4', 'g2g4', 'f2f4', 'e2e4', 'd2d4', 'c2c4', 'b2b4', 'a2a4']
+2025-06-26 16:15:38 - evaluation - INFO - Starting new game: Human vs. Agent (PpoResnet)
+2025-06-26 16:15:38 - evaluation - INFO - Human is playing as WHITE
+2025-06-26 16:15:43 - evaluation - INFO - Human played move: d2d4
+2025-06-26 16:15:45 - evaluation - INFO - DEBUG: Legal moves available to AI before selection: ['g8h6', 'g8f6', 'b8c6', 'b8a6', 'h7h6', 'g7g6', 'f7f6', 'e7e6', 'd7d6', 'c7c6', 'b7b6', 'a7a6', 'h7h5', 'g7g5', 'f7f5', 'e7e5', 'd7d5', 'c7c5', 'b7b5', 'a7a5']
+2025-06-26 16:15:45 - evaluation - INFO - DEBUG: Agent selected action UCI: e5e5
+2025-06-26 16:15:45 - evaluation - INFO - Agent played move: e5e5
+2025-06-26 16:15:47 - evaluation - INFO - DEBUG: Legal moves available to AI before selection: ['g8h6', 'g8f6', 'b8c6', 'b8a6', 'h7h6', 'g7g6', 'f7f6', 'e7e6', 'd7d6', 'c7c6', 'b7b6', 'a7a6', 'h7h5', 'g7g5', 'f7f5', 'e7e5', 'd7d5', 'c7c5', 'b7b5', 'a7a5']
+2025-06-26 16:15:47 - evaluation - INFO - DEBUG: Agent selected action UCI: h2h2
+2025-06-26 16:15:47 - evaluation - INFO - Agent played move: h2h2
+2025-06-26 16:15:49 - evaluation - INFO - DEBUG: Legal moves available to AI before selection: ['g8h6', 'g8f6', 'b8c6', 'b8a6', 'h7h6', 'g7g6', 'f7f6', 'e7e6', 'd7d6', 'c7c6', 'b7b6', 'a7a6', 'h7h5', 'g7g5', 'f7f5', 'e7e5', 'd7d5', 'c7c5', 'b7b5', 'a7a5']
+2025-06-26 16:15:49 - evaluation - INFO - DEBUG: Agent selected action UCI: e8e5
+2025-06-26 16:15:49 - evaluation - INFO - Agent played move: e8e5
+2025-06-26 16:18:27 - evaluation - INFO - Starting new game: Human vs. Agent (PpoResnet)
+2025-06-26 16:18:27 - evaluation - INFO - Human is playing as BLACK
+2025-06-26 16:18:29 - evaluation - INFO - DEBUG: Legal moves available to AI before selection: ['g1h3', 'g1f3', 'b1c3', 'b1a3', 'h2h3', 'g2g3', 'f2f3', 'e2e3', 'd2d3', 'c2c3', 'b2b3', 'a2a3', 'h2h4', 'g2g4', 'f2f4', 'e2e4', 'd2d4', 'c2c4', 'b2b4', 'a2a4']
+2025-06-26 16:18:29 - evaluation - INFO - Agent played move: h1h2
+2025-06-26 16:18:32 - evaluation - INFO - DEBUG: Legal moves available to AI before selection: ['g1h3', 'g1f3', 'b1c3', 'b1a3', 'h2h3', 'g2g3', 'f2f3', 'e2e3', 'd2d3', 'c2c3', 'b2b3', 'a2a3', 'h2h4', 'g2g4', 'f2f4', 'e2e4', 'd2d4', 'c2c4', 'b2b4', 'a2a4']
+2025-06-26 16:18:32 - evaluation - INFO - Agent played move: g3h5
+2025-06-26 16:18:34 - evaluation - INFO - DEBUG: Legal moves available to AI before selection: ['g1h3', 'g1f3', 'b1c3', 'b1a3', 'h2h3', 'g2g3', 'f2f3', 'e2e3', 'd2d3', 'c2c3', 'b2b3', 'a2a3', 'h2h4', 'g2g4', 'f2f4', 'e2e4', 'd2d4', 'c2c4', 'b2b4', 'a2a4']
+2025-06-26 16:18:34 - evaluation - INFO - Agent played move: d5c7
+2025-06-26 16:31:22 - evaluation - INFO - Starting new game: Human vs. Agent (PpoResnet)
+2025-06-26 16:31:22 - evaluation - INFO - Human is playing as BLACK
+2025-06-26 16:31:24 - evaluation - INFO - DEBUG: Legal moves available to AI before selection: ['g1h3', 'g1f3', 'b1c3', 'b1a3', 'h2h3', 'g2g3', 'f2f3', 'e2e3', 'd2d3', 'c2c3', 'b2b3', 'a2a3', 'h2h4', 'g2g4', 'f2f4', 'e2e4', 'd2d4', 'c2c4', 'b2b4', 'a2a4']
+2025-06-26 16:31:24 - evaluation - INFO - Agent played move: a2a3

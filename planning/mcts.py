@@ -3,6 +3,7 @@ import torch.nn.functional as F
 import math
 from torch.utils.data import DataLoader
 import env
+import logging
 
 
 class Node:
@@ -47,8 +48,8 @@ class MCTS:
         self.root = None
                 
     def _get_state_key(self, state):
-        """Converts a state tensor to a hashable key (bytes)."""
-        return state.tobytes()
+        arr = state.cpu().numpy()
+        return arr.tobytes()
 
     def reset(self):
         self.node_dict = {}
@@ -69,6 +70,14 @@ class MCTS:
         actions, visits = zip(*[(a, c.visits) for a, c in self.root.children.items()])
         visits = torch.tensor(visits, dtype=torch.float32)
         
+        # Validate that the chosen action is legal before returning
+        legal_actions = env.get_legal_actions(state)
+        if not all(a in legal_actions for a in actions):
+            # This should be impossible if logic is correct, but serves as a critical safeguard
+            illegal_found = [a for a in actions if a not in legal_actions]
+            logging.error(f"MCTS generated illegal actions: {illegal_found}. Legal actions were: {legal_actions}")
+            raise ValueError("MCTS generated an illegal action. This indicates a critical bug.")
+        
         # Normalize to get probabilities
         if visits.sum() > 0:
             probs = visits / visits.sum()
@@ -78,9 +87,14 @@ class MCTS:
         # Sample an action according to the visit distribution
         action_idx = torch.multinomial(probs, 1).item()
         action = actions[action_idx]
-        return action
+        
+        logging.debug(f"MCTS selected action {action} with policy target: {probs.numpy().tolist()}")
+        return action, probs
 
     def advance_tree(self, action):
+        if self.root is None:
+            return
+
         if action in self.root.children:
             self.root = self.root.children[action]
             # Prune the tree, keeping only the subtree rooted at the new root.
@@ -129,14 +143,17 @@ class MCTS:
                 # The model provides policy logits and a value from the current player's perspective.
                 policy_logits, value = self.agent.model(node.state.unsqueeze(0).to(self.agent.device))
             
-            policy_probs = F.softmax(policy_logits.squeeze(0), dim=0)
+            # Mask the policy logits for illegal moves and re-normalize
+            mask = torch.zeros_like(policy_logits, dtype=torch.bool)
+            mask[0, legal_actions] = True
+            masked_logits = policy_logits.masked_fill(~mask, float('-inf'))
+            policy_probs = F.softmax(masked_logits.squeeze(0), dim=0)
             
             # Create a child node for each legal action.
+            sim_env = env.ChessEnv() # Create a temporary, clean environment for simulation
             for action in legal_actions:
-                # Note: The environment step is not needed here as we have the state representation.
-                # This is a simplification assuming the state representation is sufficient.
-                # A more rigorous implementation might step the env to get the child state.
-                next_state, _, _, _, _ = env.step(node.state, action)
+                # The child state is implicitly handled by the tree structure; we don't need to step the env here.
+                next_state, _, _, _, _ = sim_env.step(node.state, action)
                 child, _ = self.get_or_create_node(
                     next_state,
                     c_puct=self.c_puct,

@@ -7,6 +7,7 @@ import sys
 import os
 import logging
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -32,7 +33,7 @@ class ChessEnv(gym.Env):
         self.underpromotion_pieces = _get_underpromotion_pieces()
     
     def initial_state(self):
-        return self._board_to_state(chess.Board())
+        return _board_to_state(chess.Board())
 
     def reset(self, *, seed: int | None = None, options: dict | None = None) -> tuple[torch.Tensor, dict]:
         """
@@ -48,7 +49,7 @@ class ChessEnv(gym.Env):
         logger.info("Chess environment reset.")
         super().reset(seed=seed)
         self.board.reset()
-        obs = self._board_to_state(self.board)
+        obs = _board_to_state(self.board)
         return obs, {}
 
     def step(self, state: torch.Tensor, action: int) -> tuple[torch.Tensor, float, bool, bool, dict]:
@@ -58,8 +59,8 @@ class ChessEnv(gym.Env):
         if action not in range(0, 4672):
             raise ValueError("Action must be an integer between 0 and 4672")
 
-        board = self._state_to_board(state)
-        from_square, to_square, promotion = self._decode_action_index(action, board)
+        board = _state_to_board(state)
+        from_square, to_square, promotion = _decode_action_index(action, board)
         move = chess.Move(from_square, to_square, promotion=promotion)
         move_uci = move.uci()
         new_board = board.copy()
@@ -73,8 +74,8 @@ class ChessEnv(gym.Env):
             return state, -10.0, False, False, {"error": "Illegal move"}
         
         terminated = new_board.is_game_over()
-        reward = self._get_reward(new_board)
-        new_state = self._board_to_state(new_board)
+        reward = _get_reward(new_board)
+        new_state = _board_to_state(new_board)
         return new_state, reward, terminated, False, {}
 
     def render(self, human_color: chess.Color):
@@ -150,7 +151,7 @@ class ChessEnv(gym.Env):
 def get_legal_actions(state):
     board = _state_to_board(state)
     legal_moves = [move.uci() for move in board.legal_moves]
-    legal_actions = [encode_uci_to_action_index(move, board) for move in legal_moves]
+    legal_actions = [encode_uci_to_action_index(move, state) for move in legal_moves]
     return legal_actions
 
 def encode_uci_to_action_index(uci: str, state: torch.Tensor) -> int:
@@ -166,7 +167,8 @@ def encode_uci_to_action_index(uci: str, state: torch.Tensor) -> int:
     delta_file, delta_rank = to_file - from_file, to_rank - from_rank
     
     piece = board.piece_at(from_square)
-    if piece is None: return -1 # Should not happen for legal move
+    if piece is None: 
+        return -1 # Should not happen for legal move
     
     move_type = -1
     
@@ -196,7 +198,8 @@ def encode_uci_to_action_index(uci: str, state: torch.Tensor) -> int:
             return -1
         
         distance = max(abs_delta_file, abs_delta_rank)
-        if distance == 0: return -1
+        if distance == 0:
+            return -1
 
         norm_delta_file = delta_file // distance
         norm_delta_rank = delta_rank // distance
@@ -209,8 +212,9 @@ def encode_uci_to_action_index(uci: str, state: torch.Tensor) -> int:
     
     if move_type == -1:
         return -1
-        
-    return from_square * 73 + move_type
+    
+    action_index = from_square * 73 + move_type
+    return action_index
 
 def _get_reward(board: chess.Board) -> torch.Tensor:
     """
@@ -287,7 +291,7 @@ def _state_to_board(state: torch.Tensor) -> chess.Board:
     for plane_idx in range(12):
         piece_type_idx = plane_idx % 6
         color = chess.WHITE if plane_idx < 6 else chess.BLACK
-        piece_type = _get_piece_type_to_idx()[piece_type_idx]
+        piece_type = _get_idx_to_piece_type()[piece_type_idx]
         piece = chess.Piece(piece_type, color)
 
         for row in range(8):
@@ -388,3 +392,6 @@ def _get_piece_type_to_idx():
         chess.PAWN: 0, chess.KNIGHT: 1, chess.BISHOP: 2,
         chess.ROOK: 3, chess.QUEEN: 4, chess.KING: 5
     }
+
+def _get_idx_to_piece_type():
+    return {v: k for k, v in _get_piece_type_to_idx().items()}

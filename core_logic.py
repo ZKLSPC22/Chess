@@ -160,14 +160,32 @@ def vs_human(agent_instance, human_color=None):
                         print('Quitting the game. Goodbye!')
                         exit()
                     board = env._state_to_board(state)
-                    action_idx = env.encode_uci_to_action_index(action, board)
+                    print(f"DEBUG: Human input (UCI string): '{action}'")
+
+                    action_idx = env.encode_uci_to_action_index(action, state)
+                    print(f"DEBUG: Encoded action index from UCI: {action_idx}")
+                    
                     legal_actions = env.get_legal_actions(state)
+                    print(f"DEBUG: List of legal action indices: {legal_actions}")
+
+                    # For more helpful debugging, let's see what some legal moves are in UCI format
+                    if legal_actions:
+                        print("DEBUG: Sample of legal moves (decoded back to UCI):")
+                        for i in range(min(5, len(legal_actions))):
+                            try:
+                                from_sq, to_sq, prom = env._decode_action_index(legal_actions[i], board)
+                                move = chess.Move(from_sq, to_sq, prom)
+                                print(f"  - Legal Index {legal_actions[i]} -> {move.uci()}")
+                            except Exception as e:
+                                print(f"  - Error decoding action index {legal_actions[i]}: {e}")
+
                     if action_idx not in legal_actions:
-                        print(f"Invalid move: {action}")
+                        print(f"Invalid move: {action}. The generated action index is not in the list of legal action indices.")
                         time.sleep(0.3)
                         continue
                     break
                 except Exception as e:
+                    print(f"DEBUG: An exception occurred during move validation: {e}")
                     print(f"Invalid format: {action}. Use format like 'e2e4'")
                     time.sleep(0.3)
                     continue
@@ -175,7 +193,7 @@ def vs_human(agent_instance, human_color=None):
             print(f"You played: {action}")
             time.sleep(0.5)
             eval_logger.info(f"Human played move: {action}")
-            state, _, _, _, _ = env.step(state, action_idx)
+            state, _, _, _, _ = chess_env.step(state, action_idx)
             if hasattr(agent_instance, 'mcts') and agent_instance.mcts is not None:
                 agent_instance.mcts.advance_tree(action_idx)
             
@@ -188,16 +206,23 @@ def vs_human(agent_instance, human_color=None):
             print("AI is thinking...")
             time.sleep(0.5)
             
-            action = agent_instance.select_action(state, chess_env)
-            
+            # Get legal moves for debugging
+            board = env._state_to_board(state)
+            legal_moves_uci = [move.uci() for move in board.legal_moves]
+            eval_logger.info(f"DEBUG: Legal moves available to AI before selection: {legal_moves_uci}")
+
+            result = agent_instance.select_action(state)
+            action = result if isinstance(result, int) else result[0]
+
             # Convert action back to UCI for display
-            from_square, to_square, promotion = env._decode_action_index(action)
+            board = env._state_to_board(state)
+            from_square, to_square, promotion = env._decode_action_index(action, board)
             ai_move = chess.Move(from_square, to_square, promotion=promotion).uci()
             
             print(f"AI played: {ai_move}")
             eval_logger.info(f"Agent played move: {ai_move}")
             time.sleep(0.5)
-            state, _, _, _, _ = env.step(state, action)
+            state, _, _, _, _ = chess_env.step(state, action)
             if hasattr(agent_instance, 'mcts') and agent_instance.mcts is not None:
                 agent_instance.mcts.advance_tree(action)
         
@@ -282,7 +307,7 @@ def vs_agent_with_render(agent_instance1, agent_instance2):
         print("Thinking...")
         time.sleep(0.5)
         
-        action = agent_to_move.select_action(state, chess_env)
+        action = agent_to_move.select_action(state, chess_env)[0]
         
         # Convert action back to UCI for display
         from_square, to_square, promotion = env._decode_action_index(action)
@@ -292,7 +317,7 @@ def vs_agent_with_render(agent_instance1, agent_instance2):
         eval_logger.info(f"{current_player_name} played move: {ai_move}")
         time.sleep(1.0)
         
-        state, _, _, _, _ = env.step(state, action)
+        state, _, _, _, _ = chess_env.step(state, action)
         move_count += 1
         
         if hasattr(agent_instance1, 'mcts') and agent_instance1.mcts is not None:
